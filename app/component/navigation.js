@@ -1,5 +1,5 @@
 // app/components/Navigation.tsx
-
+'use client';
 import Link from 'next/link';
 
 export default function Navigation() {
@@ -7,8 +7,7 @@ export default function Navigation() {
 <nav className="navbar navbar-expand-lg bg-body-tertiary">
   <div className="container-fluid">
 <a className="navbar-brand" href="/">
-  <img src="/bootstrap-logo.svg" alt="Logo" width={30} height={24} className="d-inline-block align-text-top" />
-  Frontend
+  <img src="/bootstrap-logo.svg" alt="Logo" width={30} height={24} className="d-inline-block align-text-top" />   Frontend
 </a>
 
     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,23 +22,23 @@ export default function Navigation() {
           <a className="nav-link" href="/about">เกี่ยวกับเรา</a>
         </li>
         <li className="nav-item dropdown">
-          <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a className="nav-link dropdown-toggle" href="/service" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             บริการของเรา
           </a>
           <ul className="dropdown-menu">
-            <li><a className="dropdown-item" href="#">Action</a></li>
-            <li><a className="dropdown-item" href="#">Another action</a></li>
+            <li><a className="dropdown-item" href="/service">ติดต่อ</a></li>
+            <li><a className="dropdown-item" href="/service">ติดต่อด้านอื่นๆ</a></li>
             <li><hr className="dropdown-divider" /></li>
-            <li><a className="dropdown-item" href="#">Something else here</a></li>
+            <li><a className="dropdown-item" href="/service">สอบถามเกี่ยวกับปัญหา</a></li>
           </ul>
         </li>
         <li className="nav-item">
-          <a className="nav-link " aria-disabled="true">ติดต่อเรา</a>
+          <a className="nav-link " aria-disabled="true" href="/contact">ติดต่อเรา</a>
         </li>
       </ul>
       <form className="d-flex" role="search">
         <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-        <button className="btn btn-outline-success" type="submit">Search</button>
+        <button className="btn btn-outline-success" type="submit">ค้นหา</button>
       </form>
     </div>
   </div>
