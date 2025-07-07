@@ -2,7 +2,7 @@
 import Navigation from "./component/navigation";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import Footer from "./component/footer";
+
 
 
 import { Prompt } from 'next/font/google';
@@ -27,7 +27,7 @@ export default function RootLayout({ children }) {
         <Navigation />
     
         {children}
-        <Footer />
+       
       </body>
     </html>
   );
