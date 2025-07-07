@@ -2,7 +2,7 @@
 import Navigation from "./component/navigation";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import Footer from "./component/footer";
+import Footer from './component/footer';
 
 
 import { Prompt } from 'next/font/google';
