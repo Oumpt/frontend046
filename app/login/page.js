@@ -13,7 +13,7 @@ export default function Login() {
             type="text"
             className="form-control"
             id="formGroupExampleInput"
-            placeholder=" ชื่อของคุณ"
+            placeholder=" กรุณาใส่ชื่อของท่าน"
           />
         </div>
         <div className="mb-3 text-start">
@@ -24,7 +24,7 @@ export default function Login() {
             type="password"
             className="form-control"
             id="formGroupExampleInput2"
-            placeholder=" รหัสผ่าน"
+            placeholder=" กรุณาใส่รหัสผ่านของท่าน"
           />
         </div>
 
@@ -40,14 +40,14 @@ export default function Login() {
             id="rememberMe"
           />
           <label className="form-check-label" htmlFor="rememberMe">
-            จำฉันไว้
+            จดจำฉันไว้
           </label>
         </div>
              
         <div className="text-center" style={{ fontSize: '0.9rem' }}>
           <a href="/register" className="me-3">สมัครสมาชิก</a>
           |
-          <a href="/forgot-password" className="ms-3">ลืมรหัสผ่าน</a>
+          <a href="/forgot-password" className="ms-3">หากลืมรหัสผ่าน</a>
         </div>
 
       </form>
