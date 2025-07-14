@@ -38,6 +38,9 @@ export default function Navbar() {
         <input className="form-control me-2" type="search" placeholder="ค้นหา" aria-label="Search" />
         <button className="btn btn-outline-warning" type="submit">ค้นหา</button>
       </form>
+      <div className="ms-2">    
+          <a href="\login" className="btn btn-primary " tabIndex={-1} role="button" >เข้าสู่ระบบ</a></div>
+
     </div>
   </div>
 </nav>
