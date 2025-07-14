@@ -16,7 +16,7 @@ export default function register () {
             type="text"
             className="form-control"
             id="username"
-            placeholder="กรอก Username"
+            placeholder="โปรดกรอกชื่อผู้ใช้"
           />
         </div>
 
@@ -28,7 +28,7 @@ export default function register () {
             type="password"
             className="form-control"
             id="password"
-            placeholder="กรอก Password"
+            placeholder="กรุณาตั้งรหัสผ่าน"
           />
         </div>
 
@@ -59,7 +59,7 @@ export default function register () {
             type="text"
             className="form-control"
             id="firstname"
-            placeholder="ชื่อของคุณ"
+            placeholder="กรุณากรอกชื่อของคุณ"
           />
         </div>
 
@@ -71,7 +71,7 @@ export default function register () {
             type="text"
             className="form-control"
             id="lasttname"
-            placeholder="นามสกุลของคุณ"
+            placeholder="กรุณากรอกนามสกุลของคุณ"
           />
         </div>
 
@@ -82,8 +82,12 @@ export default function register () {
             <textarea className="form-control" id="exampleFormControlTextarea1" rows={3} />
         </div>
 
-                    <fieldset className="mb-3 text-start">
-          <legend className="form-label">เพศ</legend>
+          <label htmlFor="gender" className="form-label">
+            เพศ
+          </label>
+
+         <div className="mb-3 text-start">
+      
 
           <div className="form-check form-check-inline">
             <input
@@ -123,7 +127,20 @@ export default function register () {
               อื่น ๆ
             </label>
           </div>
-        </fieldset>
+
+           <div className="form-check form-check-inline">
+            <input
+              className="form-check-input"
+              type="radio"
+              name="gender"
+              id="none"
+              value="none"
+            />
+            <label className="form-check-label" htmlFor="none">
+              ไม่ระบุ
+            </label>
+          </div>
+        </div>
     
         <div className="mb-3 text-start">
           <label htmlFor="birthdate" className="form-label">
