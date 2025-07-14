@@ -2,8 +2,15 @@ export default function register () {
     return (
  <div className="d-flex justify-content-center mt-5">
     <form className="p-4 border border-dark rounded"
-        style={{ width: '100%', maxWidth: '400px' }}>               
-         <h1 className="text-center text-dark mb-4" style={{ fontWeight: 'bold' }}>
+        style={{ width: '100%', maxWidth: '400px',     
+        backgroundImage: 'url("https://i.pinimg.com/736x/d4/c3/f7/d4c3f7bc082d1ffffde14dc358b38f8b.jpg")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        color: '#fff',
+        boxShadow: '0 0 15px rgba(0, 0, 0, 6)',
+        borderRadius: '20px',
+        textShadow: '2px 2px 4px rgba(0, 0, 0, 6)'}}>               
+         <h1 className="text-center textwhitek mb-4" style={{ fontWeight: 'bold' }}>
                     สมัครสมาชิก
                 </h1>
     
@@ -79,7 +86,7 @@ export default function register () {
           <label htmlFor="exampleFormControlTextarea1" className="form-label">
             ที่อยู่ของคุณ
           </label>
-            <textarea className="form-control" id="exampleFormControlTextarea1" rows={3} />
+            <textarea className="form-control" id="exampleFormControlTextarea1" rows={3} placeholder="กรุณากรอกที่อยู่ของคุณ"/>
         </div>
 
           <label htmlFor="gender" className="form-label">
