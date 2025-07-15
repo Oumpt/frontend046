@@ -103,26 +103,34 @@ const [formData, setFormData] = useState({
            {errors.password && <div className="text-danger">{errors.password}</div>}
         </div>
 
-    <div className="mb-3 text-start">
-          <label htmlFor="prefix" className="form-label">
-            คำนำหน้าชื่อ
-          </label>
- <select
-            id="prefix"
-            name="prefix"
-            className={`form-control ${errors.select ? 'border border-danger' : ''}`}
-            value={formData.prefix}
-            onChange={handleChange}
-          >
-            <option value="" disabled>
-              เลือกคำนำหน้า
-            </option>
-            <option value="1">นาย</option>
-            <option value="2">นาง</option>
-            <option value="3">นางสาว</option>
-          </select>
-              {errors.prefix && <div className="text-danger">{errors.prefix}</div>}
-     </div>
+<div className="mb-3 text-start position-relative">
+  <label htmlFor="prefix" className="form-label">
+    คำนำหน้าชื่อ
+  </label>
+
+  <div className="position-relative">
+    <select
+      id="prefix"
+      name="prefix"
+      className={`form-control ${errors.select ? 'border border-danger' : ''} pe-5`} 
+      value={formData.prefix}
+      onChange={handleChange}
+    >
+      <option value="" disabled>
+        เลือกคำนำหน้า
+      </option>
+      <option value="1">นาย</option>
+      <option value="2">นาง</option>
+      <option value="3">นางสาว</option>
+    </select>
+
+    
+    <i className="bi bi-chevron-down position-absolute top-50 end-0 translate-middle-y me-3 pointer-events-none" style={{ cursor: 'pointer', color: 'black' }}></i>
+  </div>
+
+  {errors.prefix && <div className="text-danger">{errors.prefix}</div>}
+  </div>
+
 
         <div className="mb-3 text-start">
           <label htmlFor="firstname" className="form-label">
