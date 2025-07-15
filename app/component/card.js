@@ -4,32 +4,32 @@ export default function Card() {
         <div className="row">
             <div className="col-md-12 text-center mb-4"></div>
             <div className="col-md-12 text-center mb-4">
-                <h3>components</h3>
+                <h2 style={{ color: '#ff6347' }}>Anime</h2>
             </div>
         </div>
         <div className="row">
             <div className="col-md-4 mb-4">
                 <div className="card">
-                <img src="/card.png" className="card-img-top img-responsive" alt="..." />
+                <img src="/aka.jpg" className="card-img-top img-responsive" alt="..." />
                 <div className="card-body">
-                    <p className="card-text">รายละเอียด card</p>
+                    <p className="card-text">Akira</p>
                 </div>
                 </div>
             </div>
 
             <div className="col-md-4 mb-4">
             <div className="card">
-                <img src="/carousel.png" className="card-img-top" alt="..." />
+                <img src="/fu.jpg" className="card-img-top" alt="..." />
                 <div className="card-body">
-                    <p className="card-text">รายละเอียด carousel</p>
+                    <p className="card-text">Fullmetal Alchemist Brotherhood</p>
                 </div>
                 </div>
             </div>
             <div className="col-md-4 mb-4">
             <div className="card">
-                <img src="/footer.png" className="card-img-top" alt="..." />
+                <img src="/fe.jpg" className="card-img-top" alt="..." />
                 <div className="card-body">
-                    <p className="card-text">รายละเอียด footer</p>
+                    <p className="card-text">Frieren Beyond Journey's End</p>
                 </div>
                 </div>
             </div>
