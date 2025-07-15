@@ -126,6 +126,7 @@ const [formData, setFormData] = useState({
 
     
     <i className="bi bi-chevron-down position-absolute top-50 end-0 translate-middle-y me-3 pointer-events-none" style={{ cursor: 'pointer', color: 'black' }}></i>
+               {errors.select && <div className="text-danger">{errors.select}</div>}
   </div>
 
   {errors.prefix && <div className="text-danger">{errors.prefix}</div>}
