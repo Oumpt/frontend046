@@ -23,12 +23,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="th">
       <body className={prompt.className}>
-      
+
         <Navigation />
-    
-   
+        
         {children}
-    
+
        <Footer />
       </body>
     </html>
