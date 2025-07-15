@@ -22,7 +22,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="th">
-      <body className={prompt.className} style={{backgroundColor: "Black"}}>
+      <body className={prompt.className} style={{backgroundColor: "gray"}}>
 
         <Navigation />
         <main style={{ paddingTop: '55px' }}>  
