@@ -2,10 +2,13 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import SearchBox from './SearchBox';
 
 export default function Navbar() {
   return (
-<nav className="navbar navbar-expand-lg bg-body-tertiary">
+<nav className="navbar navbar-expand-lg fixed-top bg-body-tertiary navbar-black" style={{
+
+    }}>
   <div className="container-fluid">
   <Link href="/" className="navbar-brand d-flex align-items-center gap-2"><img src="/bootstrap-logo.svg" alt="Logo" width={30} height={24} className="d-inline-block align-text-top" /> FrontEnd</Link>
     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,10 +37,7 @@ export default function Navbar() {
           <Link href="/contact" className="nav-link" aria-disabled="true">ติดต่อเรา</Link>
         </li>
       </ul>
-      <form className="d-flex" role="search">
-        <input className="form-control me-2" type="search" placeholder="ค้นหา" aria-label="Search" />
-        <button className="btn btn-outline-warning" type="submit">ค้นหา</button>
-      </form>
+  <SearchBox />
       <div className="ms-2">    
           <a href="\login" className="btn btn-primary " tabIndex={-1} role="button" >เข้าสู่ระบบ</a></div>
 
