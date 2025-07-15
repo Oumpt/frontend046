@@ -37,7 +37,7 @@ export default function Navbar() {
           <Link href="/contact" className="nav-link" aria-disabled="true">ติดต่อเรา</Link>
         </li>
       </ul>
-  <SearchBox />
+
       <div className="ms-2">    
           <a href="\login" className="btn btn-primary " tabIndex={-1} role="button" >เข้าสู่ระบบ</a></div>
 
