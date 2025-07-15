@@ -26,9 +26,9 @@ export default function RootLayout({ children }) {
       
         <Navigation />
     
-      <main style={{ paddingTop: '70px' }}>
+   
         {children}
-      </main>
+    
        <Footer />
       </body>
     </html>
