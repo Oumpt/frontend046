@@ -27,7 +27,7 @@ export default function Navbar() {
             บริการของเรา
           </Link>
           <ul className="dropdown-menu">
-            <li><Link className="dropdown-item" href="/service">ติดต่อเรา</Link></li>
+            <li><Link className="dropdown-item" href="/service">ติดต่อเlรา</Link></li>
             <li><Link className="dropdown-item" href="/service">ติดต่อ ด้านอื่นๆ</Link></li>
             <li><hr className="dropdown-divider" /></li>
             <li><Link className="dropdown-item" href="/service">สอบถามเกียวกับปัญหา</Link></li>
