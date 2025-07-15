@@ -25,8 +25,11 @@ export default function RootLayout({ children }) {
       <body className={prompt.className}>
 
         <Navigation />
-        
-        {children}
+        <main style={{ paddingTop: '70px' }}>  
+          {children}
+
+        </main>
+      
 
        <Footer />
       </body>
