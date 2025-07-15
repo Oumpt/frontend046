@@ -4,7 +4,7 @@ export default function Card() {
         <div className="row">
             <div className="col-md-12 text-center mb-4"></div>
             <div className="col-md-12 text-center mb-4">
-                <h2 style={{ color: '#ff6347' }}>Anime</h2>
+                <h2 style={{ color: '#ffff' }}>Anime</h2>
             </div>
         </div>
         <div className="row">
