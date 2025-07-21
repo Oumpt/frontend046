@@ -14,16 +14,17 @@ export default function Footer() {
         <footer
           className="py-5"
           style={{
-            background: 'linear-gradient(135deg, #0d0d0d, #1a1a1a)',
+            background: 'rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(10px)',
             borderRadius: '16px',
-            color: '#AAAAAA',
-            boxShadow: '0 0 30px rgba(255, 0, 85, 00)',
-            border: '1px solid rgba(255, 255, 255, 0.15)', 
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            color: '#fff',
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
           }}
         >
           <div className="row px-4">
             <div className="col-6 col-md-3 mb-3">
-              <h5 style={{ color: '#FF0055' }}>เมนูหลัก</h5>
+              <h5 style={{ color: '#fff' }}>เมนูหลัก</h5>
               <ul className="nav flex-column">
                 {[
                   { label: 'หน้าแรก', path: '/' },
@@ -33,7 +34,7 @@ export default function Footer() {
                   { label: 'เข้าสู่ระบบ', path: '/login' },
                 ].map((item) => (
                   <li className="nav-item mb-2" key={item.path}>
-                    <a href={item.path} className="nav-link p-0" style={{ color: '#fff' }}>
+                    <a href={item.path} className="nav-link p-0 text-white">
                       {item.label}
                     </a>
                   </li>
@@ -43,8 +44,10 @@ export default function Footer() {
 
             <div className="col-md-6 offset-md-1 mb-3">
               <form>
-                <h5 style={{ color: '#FF0055' }}>ติดตามข่าวสาร</h5>
-                <p>รับอัปเดตข่าวใหม่ล่าสุดจากจักรวาลไซเบอร์</p>
+                <h5 style={{ color: '#fff' }}>ติดตามข่าวสาร</h5>
+                <p style={{ color: '#fff' }}>
+                  รับอัปเดตข่าวใหม่ล่าสุดจากจักรวาลไซเบอร์
+                </p>
                 <div className="d-flex flex-column flex-sm-row w-100 gap-2">
                   <label htmlFor="newsletter1" className="visually-hidden">
                     Email address
@@ -55,18 +58,19 @@ export default function Footer() {
                     className="form-control"
                     placeholder="Email address"
                     style={{
-                      backgroundColor: '#1a1a1a',
-                      border: '1px solid rgba(255, 255, 255, 0.15)', 
+                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
                       color: '#fff',
+                      border: '1px solid rgba(255, 255, 255, 0.2)',
                     }}
                   />
                   <button
                     className="btn"
                     type="button"
                     style={{
-                      backgroundColor: '#FF0055',
-                      color: '#fff',
+                      backgroundColor: '#fff',
+                      color: '#000',
                       border: 'none',
+                      fontWeight: 'bold',
                     }}
                   >
                     Subscribe
@@ -76,17 +80,19 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="d-flex flex-column flex-sm-row justify-content-between py-4 px-4 my-4 border-top border-secondary">
-            <p className="mb-0">© 2025 Neo-Tokyo Corp. All rights reserved.</p>
+          <div className="d-flex flex-column flex-sm-row justify-content-between py-4 px-4 my-4 border-top border-light">
+            <p className="mb-0" style={{ color: '#fff' }}>
+              © 2025 Pongthep Corp. All rights reserved.
+            </p>
             <ul className="list-unstyled d-flex">
               <li className="ms-3">
                 <a className="text-white" href="#">
-                  <i className="bi bi-instagram fs-5" style={{ color: '#FF0055' }}></i>
+                  <i className="bi bi-instagram fs-5" style={{ color: '#fff' }}></i>
                 </a>
               </li>
               <li className="ms-3">
                 <a className="text-white" href="#">
-                  <i className="bi bi-facebook fs-5" style={{ color: '#FF0055' }}></i>
+                  <i className="bi bi-facebook fs-5" style={{ color: '#fff' }}></i>
                 </a>
               </li>
             </ul>
