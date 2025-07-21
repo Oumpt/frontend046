@@ -18,15 +18,14 @@ export default function Navbar() {
   }, []);
   return (
 <nav className="navbar navbar-expand-lg fixed-top " style={{         
-  backgroundColor: "rgba(255, 255, 255, 0.1)",       // พื้นหลังโปร่งใส
-        backdropFilter: "blur(10px)",                      // เบลอพื้นหลัง
-        WebkitBackdropFilter: "blur(10px)",                // รองรับ Safari
-        borderRadius: "16px",                              // ขอบมน
-        border: "1px solid rgba(255, 255, 255, 0.2)",       // ขอบจางๆ
-        boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.2)",   // เงาเบาๆ
-        margin: "12px",                                     // เว้นจากขอบจอ
-        padding: "8px 16px",                                // เพิ่ม padding
-        zIndex: 1030
+  backgroundColor: "rgba(255, 255, 255, 0.1)",    
+        backdropFilter: "blur(10px)",                     
+        WebkitBackdropFilter: "blur(10px)",                
+        borderRadius: "16px",                             
+        border: "1px solid rgba(255, 255, 255, 0.2)",       
+        boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.2)",   
+        margin: "12px",                                     
+        padding: "8px 16px",                                
 
     }}>
   <div className="container-fluid">
