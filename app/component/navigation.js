@@ -17,7 +17,16 @@ export default function Navbar() {
     loadBootstrap();
   }, []);
   return (
-<nav className="navbar navbar-expand-lg fixed-top " style={{ backdropFilter:"blur(13px)" , backgroundColor: "rgb(0,0,0,0)"
+<nav className="navbar navbar-expand-lg fixed-top " style={{         
+  backgroundColor: "rgba(255, 255, 255, 0.1)",       // พื้นหลังโปร่งใส
+        backdropFilter: "blur(10px)",                      // เบลอพื้นหลัง
+        WebkitBackdropFilter: "blur(10px)",                // รองรับ Safari
+        borderRadius: "16px",                              // ขอบมน
+        border: "1px solid rgba(255, 255, 255, 0.2)",       // ขอบจางๆ
+        boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.2)",   // เงาเบาๆ
+        margin: "12px",                                     // เว้นจากขอบจอ
+        padding: "8px 16px",                                // เพิ่ม padding
+        zIndex: 1030
 
     }}>
   <div className="container-fluid">
@@ -44,7 +53,13 @@ export default function Navbar() {
                 href="/login"
                 className="btn btn-primary"
                 role="button"
-                style={{ color: "white" }}
+                style={{     color: "white",
+                    backgroundColor: "rgba(255, 255, 255, 0.05)",       // พื้นหลังใส
+                    border: "1px solid rgba(255, 255, 255, 0.3)",         // ขอบขาวบาง
+                    backdropFilter: "blur(6px)",                          // เบลอด้านหลังปุ่ม
+                    WebkitBackdropFilter: "blur(6px)",
+                    borderRadius: "8px",                                  // ขอบมน
+                    padding: "6px 16px" }}
               >
                 เข้าสู่ระบบ
               </a>
