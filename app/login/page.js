@@ -37,7 +37,11 @@ export default function Login() {
   };
 
   return (
-    <div className="d-flex justify-content-center mt-5" style={{marginTop: '100px'}}>
+    <div className="d-flex justify-content-center mt-5" style={{      
+      maxWidth                          : '400px',
+      padding                           : '20px',
+      margin                            : '0 auto',
+      marginTop: '100px'}}>
       <form onSubmit={handleSubmit}
         className="p-4 border border-dark rounded"
      style={{ width: '100%', maxWidth: '400px',     
