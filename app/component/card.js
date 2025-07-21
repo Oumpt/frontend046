@@ -11,7 +11,7 @@ export default function Card() {
   const descriptions = {
     aka: "อากิระเดอะเบส",
     fu: "แขนกลคนขาหาย",
-    fe: "คุณยายนั่งท่องเที่ยว",
+    fe: "คุณยายนักท่องเที่ยว",
   };
 
   const [hovered, setHovered] = useState(null);
