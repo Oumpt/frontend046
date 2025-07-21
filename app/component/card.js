@@ -20,7 +20,7 @@ export default function Card() {
     <div className="container-fluid">
       <div className="row">
         <div className="col-md-12 text-center mb-4">
-          <h2 style={{ color: "#ffff" }}>Anime</h2>
+          <h2 style={{ color: "#fff" }}>Anime</h2>
         </div>
       </div>
 
@@ -57,6 +57,7 @@ export default function Card() {
                     color: "white",
                     fontSize: "1rem",
                     margin: 0,
+
                   }}
                 >
                   {key === "aka"
