@@ -9,9 +9,9 @@ export default function Card() {
   };
 
   const descriptions = {
-    aka: "ภาพยนตร์อนิเมะที่โด่งดังจากปี 1988",
-    fu: "อนิเมะแฟนตาซีผจญภัยยอดนิยม",
-    fe: "เรื่องราวแห่งการเดินทางและเวลา",
+    aka: "อากิระเดอะเบส",
+    fu: "แขนกลคนขาหาย",
+    fe: "คุณยายนั่งท่องเที่ยว",
   };
 
   const [hovered, setHovered] = useState(null);
