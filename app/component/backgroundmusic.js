@@ -3,8 +3,8 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 
 export default function BackgroundMusic() {
   const audioRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(0.1);
+  const [isPlaying, setIsPlaying] = useState(true); // เล่นเพลงตั้งแต่เริ่ม
+  const [volume, setVolume] = useState(0.3);
   const [showControls, setShowControls] = useState(false);
   const [showVolumeControl, setShowVolumeControl] = useState(false);
 
@@ -13,7 +13,7 @@ export default function BackgroundMusic() {
       audioRef.current.volume = volume;
       if (isPlaying) {
         audioRef.current.play().catch(() => {
-          // autoplay อาจโดนบล็อค ต้องให้ user กดก่อน
+          // autoplay โดนบล็อค อาจต้องให้ user กดก่อน
         });
       } else {
         audioRef.current.pause();
@@ -38,7 +38,7 @@ export default function BackgroundMusic() {
       document.addEventListener('mousedown', handleClickOutside);
     } else {
       document.removeEventListener('mousedown', handleClickOutside);
-      setShowVolumeControl(false); // ถ้า controls หาย volume control ก็หายด้วย
+      setShowVolumeControl(false);
     }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -144,7 +144,7 @@ export default function BackgroundMusic() {
       )}
 
       {/* เพลง */}
-      <audio ref={audioRef} src="/music/inter.mp3" loop />
+      <audio ref={audioRef} src="/music/jelly.mp3" loop />
     </div>
   );
 }
