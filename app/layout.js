@@ -35,7 +35,8 @@ export default function RootLayout({ children }) {
           }
         `}</style>
       </head>
-      <body className={prompt.className} style={{ backgroundColor: 'gray' }}>
+      <body className={prompt.className} style={{ backgroundImage : 'url(/free.png)',backgroundSize: 'cover', backgroundPosition: 'center'
+ }}>
         <Navigation />
 
         {children}
