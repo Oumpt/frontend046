@@ -23,9 +23,9 @@ export default function Card() {
           <h1
             style={{
               color: "#fff",
-              marginTop: "3rem",       // เพิ่มช่องว่างบน
-              marginBottom: "1.5rem",  // เพิ่มช่องว่างล่าง
-              fontWeight: "normal",    // รักษาฟ้อนต์เดิม
+              marginTop: "3rem",       
+              marginBottom: "1.5rem",  
+              fontWeight: "normal",    
             }}
           >
             Anime
