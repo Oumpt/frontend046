@@ -39,7 +39,7 @@ export default function Login() {
   return (
     <div className="d-flex justify-content-center mt-5" style={{      
       maxWidth                          : '400px',
-      padding                           : '20px',
+      padding                           : '50px',
       margin                            : '0 auto',
       marginTop: '100px'}}>
       <form onSubmit={handleSubmit}
