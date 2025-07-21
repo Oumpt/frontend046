@@ -3,7 +3,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 
 export default function BackgroundMusic() {
   const audioRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(true); // เล่นเพลงตั้งแต่เริ่ม
+  const [isPlaying, setIsPlaying] = useState(false); // เล่นเพลงตั้งแต่เริ่ม
   const [volume, setVolume] = useState(0.3);
   const [showControls, setShowControls] = useState(false);
   const [showVolumeControl, setShowVolumeControl] = useState(false);
