@@ -14,7 +14,7 @@ export default function Footer() {
         <footer
           className="py-5"
           style={{
-            background: 'rgba(255, 255, 255, 0.05)',
+            background: '#000',
             backdropFilter: 'blur(10px)',
             borderRadius: '16px',
             border: '1px solid rgba(255, 255, 255, 0.2)',
