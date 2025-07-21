@@ -18,8 +18,8 @@ export default function RootLayout({ children }) {
     <html lang="th">
       <head>
         <title>FrontEnd046 Pongthep</title>
-        <meta name="viewport saturate-200" content="device-width,"/>
-              <style jsx global>{`
+        <meta name="viewport saturate-200" content="device-width,"/>  
+                      <style jsx global>{`
         /* ซ่อน scrollbar สำหรับ Webkit browsers (Chrome, Safari, Edge) */
         ::-webkit-scrollbar {
           display: none;
@@ -39,7 +39,7 @@ export default function RootLayout({ children }) {
         body::-webkit-scrollbar { 
           display: none;  /* Safari and Chrome */
         }
-      `}</style>
+      `}</style>  
       </head>
       <body className={prompt.className} style={{backgroundColor: "gray"}}>
 
