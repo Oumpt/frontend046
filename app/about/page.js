@@ -1,5 +1,6 @@
 'use client';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useState } from 'react';
 
 export default function AboutAnime() {
@@ -24,9 +25,10 @@ export default function AboutAnime() {
       { position: "ดูทุกตอนไม่ทราบอะไรเลย", title: "Made in Abyss", duration: "ดูได้ 3 ตอนหลับ" },
       { position: "นักดูมาราธอน2", title: "เมะทั่วไป(12 ตอน 1 ซีซั่น)", duration: "ไม่ถึงวัน..." }
     ],
+    // <-- แก้ตรงนี้! ใช้ 'url' แทน 'Link' และใส่ URL จริง
     socialMedia: [
-      { platform: "YouTube", handle: "Tsubaki Reviews", icon: "bi-youtube" },
-      { platform: "Twitter", handle: "@tsubaki_dark", icon: "bi-twitter" }
+      { platform: "YouTube", handle: "Oum", icon: "bi-youtube", url: "https://youtube.com/" },
+      { platform: "Twitter", handle: "@oum", icon: "bi-twitter", url: "https://twitter.com/" }
     ]
   };
 
@@ -79,10 +81,10 @@ export default function AboutAnime() {
         <div style={{ flex: '1 1 280px', minWidth: '280px' }}>
           <h1 style={{
             fontFamily: 'Zen Kaku Gothic New, sans-serif',
-            color: '#FFF',           // ✅ สีขาว
+            color: '#FFF',          
             fontSize: '2.5rem',
             marginBottom: '0.25rem',
-            fontWeight: 'bold'       // ✅ ตัวหนา
+            fontWeight: 'bold'       
           }}>
             {personalInfo.name}
           </h1>
@@ -97,20 +99,28 @@ export default function AboutAnime() {
           <p style={{ fontStyle: 'italic', margin: '1rem 0', fontSize: '1.1rem', color: '#DDD' }}>
             “{personalInfo.quote}”
           </p>
+
+          {/* Social Media - ไฮไลท์ตรงนี้ */}
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
             {personalInfo.socialMedia.map((s, i) => (
-              <a key={i} href="#" style={{
-                width: '40px', height: '40px',
-                background: '#222',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#EEE',
-                fontSize: '1.2rem',
-                textDecoration: 'none',
-                transition: 'background 0.3s ease',
-              }}
+              <a
+                key={i}
+                href={s.url}           
+                  target="_blank"                 
+                  rel="noopener noreferrer"                  
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  background: '#222',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#EEE',
+                  fontSize: '1.2rem',
+                  textDecoration: 'none',
+                  transition: 'background 0.3s ease',
+                }}
                 onMouseEnter={e => e.currentTarget.style.background = '#C62828'}
                 onMouseLeave={e => e.currentTarget.style.background = '#222'}
                 aria-label={s.platform}
@@ -119,6 +129,7 @@ export default function AboutAnime() {
               </a>
             ))}
           </div>
+          {/* จบ Social Media */}
         </div>
       </div>
 
@@ -219,38 +230,13 @@ export default function AboutAnime() {
           }}>
             <ul style={{ paddingLeft: '1.2rem' }}>
               {personalInfo.experience.map((exp, i) => (
-                <li key={i} style={{ margin: '1rem 0' }}>
-                  <strong>{exp.position}</strong> — {exp.title} (<span style={{ fontStyle: 'normal', color: '#BBB' }}>{exp.duration}</span>)
+                <li key={i} style={{ margin: '0.6rem 0' }}>
+                  <strong>{exp.position}</strong> - {exp.title} <em>({exp.duration})</em>
                 </li>
               ))}
             </ul>
           </div>
         )}
-      </div>
-
-      {/* Contact to Request Anime */}
-      <div className="row mt-5" style={{ marginTop: '3rem', width: '100%' }}>
-        <div className="col-12 text-center">
-          <div className="p-4 rounded-4 shadow-sm" style={{
-            background: 'rgba(0, 0, 0, 0.6)',
-            padding: '1.5rem',
-            borderRadius: '12px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
-          }}>
-            <h3 className="mb-3" style={{ color: '#C62828' }}>อยากได้อนิเมะแนะนำจากฉัน?</h3>
-            <p className="mb-4">บอกแนวที่คุณชอบ หรือสิ่งที่คุณกำลังมองหา แล้วฉันจะหาอนิเมะให้!</p>
-            <div className="d-flex justify-content-center gap-3 flex-wrap">
-              <button className="btn px-4 py-2" style={{ background: '#C62828', color: 'white', borderRadius: '30px' }}>
-                <i className="bi bi-envelope-fill me-2"></i>
-                ขออนิเมะทางอีเมล
-              </button>
-              <button className="btn px-4 py-2" style={{ background: '#C62828', color: 'white', borderRadius: '30px' }}>
-                <i className="bi bi-chat-fill me-2"></i>
-                แชทเพื่อขออนิเมะ
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
