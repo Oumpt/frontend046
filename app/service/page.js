@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const categories = [
   { id: 'action', name: 'แอ็คชัน', color: '#D32F2F' },
@@ -364,18 +365,26 @@ export default function AnimePage() {
               หากคุณมีคำถามหรืออยากแชร์อนิเมะที่ชอบ กดปุ่มด้านล่างเพื่อเชื่อมต่อกับเราเลย!
             </p>
             <div className="d-flex justify-content-center gap-3 flex-wrap">
-              <button className="btn px-4 py-2" style={{ background: '#D32F2F', color: 'white', borderRadius: '30px' }}>
-                <i className="bi bi-telephone-fill me-2"></i>
-                คุยกับทีมแอ็คชัน
-              </button>
-              <button className="btn px-4 py-2" style={{ background: '#388E3C', color: 'white', borderRadius: '30px' }}>
-                <i className="bi bi-chat-dots-fill me-2"></i>
-                ผจญภัยไปกับเรา
-              </button>
-              <button className="btn px-4 py-2" style={{ background: '#9C27B0', color: 'white', borderRadius: '30px' }}>
-                <i className="bi bi-envelope-fill me-2"></i>
-                ส่งเวทมนตร์แฟนตาซี
-              </button>
+          <Link href="/contact" passHref>
+            <button className="btn px-4 py-2" style={{ background: '#D32F2F', color: 'white', borderRadius: '30px' }}>
+              <i className="bi bi-telephone-fill me-2"></i>
+              คุยกับทีมแอ็คชัน
+            </button>
+          </Link>
+
+          <Link href="/contact" passHref>
+            <button className="btn px-4 py-2" style={{ background: '#388E3C', color: 'white', borderRadius: '30px' }}>
+              <i className="bi bi-chat-dots-fill me-2"></i>
+              ผจญภัยไปกับเรา
+            </button>
+          </Link>
+
+          <Link href="/contact" passHref>
+            <button className="btn px-4 py-2" style={{ background: '#9C27B0', color: 'white', borderRadius: '30px' }}>
+              <i className="bi bi-envelope-fill me-2"></i>
+              ส่งเวทมนตร์แฟนตาซี
+            </button>
+          </Link>
             </div>
           </div>
         </div>
