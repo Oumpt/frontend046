@@ -152,12 +152,12 @@ export default function Footer() {
 
             <ul className="list-unstyled d-flex mb-0 gap-3">
               <li>
-                <Link href="/privacy-policy" className="text-white text-decoration-none">
+                <Link href="/" className="text-white text-decoration-none">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="/terms-of-service" className="text-white text-decoration-none">
+                <Link href="/" className="text-white text-decoration-none">
                   Terms of Service
                 </Link>
               </li>
