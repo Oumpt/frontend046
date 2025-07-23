@@ -179,7 +179,7 @@ export default function AnimePage() {
 
   return (
     <div style={{ maxWidth: '1200px', margin: '80px auto 40px', padding: '0 20px' }}>
-      <h1 style={{ color: '#D32F2F', marginBottom: '30px', fontSize: '2.5rem', textAlign: 'center' }}>
+      <h1 style={{ color: '#ffff', marginBottom: '30px', fontSize: '2.5rem', textAlign: 'center' }}>
         บริการแนะนำอนิเมะของเรา
       </h1>
 
@@ -300,7 +300,7 @@ export default function AnimePage() {
 
       {/* รีวิว */}
       <section style={{ marginTop: '60px' }}>
-        <h2 style={{ textAlign: 'center', color: '#D32F2F', marginBottom: '40px' }}>
+        <h2 style={{ textAlign: 'center', color: '#ffff', marginBottom: '40px' }}>
           รีวิวจากแฟนอนิเมะ
         </h2>
         <div style={{
