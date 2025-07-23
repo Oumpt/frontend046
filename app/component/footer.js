@@ -1,4 +1,5 @@
 'use client';
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -12,7 +13,7 @@ export default function Footer() {
 
       <div className="container-fluid mt-5">
         <footer
-          className="py-5"
+          className="py-4"
           style={{
             background: '#000',
             backdropFilter: 'blur(10px)',
@@ -23,7 +24,47 @@ export default function Footer() {
           }}
         >
           <div className="row px-4">
-            <div className="col-6 col-md-3 mb-3">
+
+            {/* ซ้าย: การแนะนำอนิเมะ + คำอธิบาย + social */}
+            <div className="col-12 col-md-4 mb-3">
+              <Link href="/" className="d-flex align-items-center text-decoration-none mb-3">
+                <img
+                  src="/logo.jpg"  // เปลี่ยนภาพโลโก้ตามต้องการ
+                  alt="Logo"
+                  width="35"
+                  height="35"
+                  className="me-2 rounded-circle"
+                />
+                <span
+                  style={{
+                    color: '#ffff',
+                    fontWeight: '600',
+                    fontFamily: 'Poppins, sans-serif',
+                    fontSize: '1.25rem',
+                  }}
+                >
+                  พงอุ้ม กับ อนิเมะของเขา
+                </span>
+              </Link>
+              <p className="" style={{ fontSize: '0.9rem', lineHeight: '1.6' }}>
+                คัดสรรอนิเมะคุณภาพที่น่าติดตาม เพื่อเพิ่มความสนุกและแรงบันดาลใจในทุกวันของคุณ
+              </p>
+
+              <div className="d-flex gap-3 mt-3">
+                <a href="#" className="text-white" aria-label="Instagram">
+                  <i className="bi bi-instagram fs-5"></i>
+                </a>
+                <a href="#" className="text-white" aria-label="Facebook">
+                  <i className="bi bi-facebook fs-5"></i>
+                </a>
+                <a href="#" className="text-white" aria-label="Line">
+                  <i className="bi bi-line fs-5"></i>
+                </a>
+              </div>
+            </div>
+
+            {/* เมนูหลัก */}
+            <div className="col-6 col-md-2 mb-3">
               <h5 style={{ color: '#fff' }}>เมนูหลัก</h5>
               <ul className="nav flex-column">
                 {[
@@ -34,15 +75,35 @@ export default function Footer() {
                   { label: 'เข้าสู่ระบบ', path: '/login' },
                 ].map((item) => (
                   <li className="nav-item mb-2" key={item.path}>
-                    <a href={item.path} className="nav-link p-0 text-white">
+                    <Link href={item.path} className="nav-link p-0 text-white">
                       {item.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="col-md-6 offset-md-1 mb-3">
+            {/* ส่วนบริการ */}
+            <div className="col-6 col-md-3 mb-3">
+              <h5 style={{ color: '#fff' }}>ส่วนบริการ</h5>
+              <ul className="nav flex-column">
+                {[
+                  { label: 'แนะนำอนิเมะ', path: '/anime-recommendations' },
+                  { label: 'รีวิวอนิเมะ', path: '/anime-reviews' },
+                  { label: 'อันดับอนิเมะ', path: '/anime-ranking' },
+                  { label: 'ข่าวสารอนิเมะ', path: '/anime-news' },
+                ].map((item) => (
+                  <li className="nav-item mb-2" key={item.path}>
+                    <Link href={item.path} className="nav-link p-0 text-white">
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* ติดตามข่าวสาร */}
+            <div className="col-12 col-md-3 mb-3">
               <form>
                 <h5 style={{ color: '#fff' }}>ติดตามข่าวสาร</h5>
                 <p style={{ color: '#fff' }}>
@@ -78,22 +139,27 @@ export default function Footer() {
                 </div>
               </form>
             </div>
+
           </div>
 
-          <div className="d-flex flex-column flex-sm-row justify-content-between py-4 px-4 my-4 border-top border-light">
-            <p className="mb-0" style={{ color: '#fff' }}>
+          <div
+            className="d-flex flex-column flex-sm-row justify-content-between align-items-center py-4 px-4 my-4 border-top border-light"
+            style={{ fontSize: '0.8rem' }}
+          >
+            <p className="mb-0 text-center text-sm-start" style={{ color: '#fff' }}>
               © 2025 Pongthep Corp. All rights reserved.
             </p>
-            <ul className="list-unstyled d-flex">
-              <li className="ms-3">
-                <a className="text-white" href="#">
-                  <i className="bi bi-instagram fs-5" style={{ color: '#fff' }}></i>
-                </a>
+
+            <ul className="list-unstyled d-flex mb-0 gap-3">
+              <li>
+                <Link href="/privacy-policy" className="text-white text-decoration-none">
+                  Privacy Policy
+                </Link>
               </li>
-              <li className="ms-3">
-                <a className="text-white" href="#">
-                  <i className="bi bi-facebook fs-5" style={{ color: '#fff' }}></i>
-                </a>
+              <li>
+                <Link href="/terms-of-service" className="text-white text-decoration-none">
+                  Terms of Service
+                </Link>
               </li>
             </ul>
           </div>
