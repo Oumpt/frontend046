@@ -1,7 +1,6 @@
 'use client';
 import React, { useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 
 const categories = [
   { id: 'action', name: 'แอ็คชัน', color: '#D32F2F' },
@@ -121,53 +120,7 @@ const testimonials = [
 export default function AnimePage() {
   const [activeCategory, setActiveCategory] = useState('all');
 
-  function getButtonStyle(categoryId, active) {
-    const cat = categories.find(c => c.id === categoryId);
-    const baseColor = cat ? cat.color : '#666';
-
-    if (!active) return {
-      background: 'transparent',
-      border: `2px solid ${baseColor}`,
-      color: baseColor,
-      cursor: 'pointer',
-      padding: '8px 18px',
-      borderRadius: '24px',
-      fontWeight: '600',
-      marginRight: '10px',
-      transition: 'all 0.3s ease',
-    };
-
-    if (categoryId === 'rainbow') {
-      return {
-        background: cat.color,
-        border: 'none',
-        color: 'white',
-        padding: '8px 18px',
-        borderRadius: '24px',
-        fontWeight: '700',
-        marginRight: '10px',
-        cursor: 'default',
-        boxShadow: '0 0 12px rgba(255,255,255,0.7)',
-      };
-    }
-
-    return {
-      background: baseColor,
-      border: 'none',
-      color: 'white',
-      padding: '8px 18px',
-      borderRadius: '24px',
-      fontWeight: '700',
-      marginRight: '10px',
-      cursor: 'default',
-      boxShadow: `0 0 10px ${baseColor}`,
-    };
-  }
-
-  const filteredServices = activeCategory === 'all'
-    ? services
-    : services.filter(s => s.category === activeCategory);
-
+  // ฟังก์ชันช่วยในการสร้างดาวเรตติ้ง
   function renderStars(rating) {
     const stars = [];
     const fullStars = Math.floor(rating);
@@ -178,12 +131,18 @@ export default function AnimePage() {
     return stars;
   }
 
+  // กรองอนิเมะตามหมวดหมู่ที่เลือก
+  const filteredServices = activeCategory === 'all'
+    ? services
+    : services.filter(s => s.category === activeCategory);
+
   return (
     <div style={{ maxWidth: '1200px', margin: '80px auto 40px', padding: '0 20px' }}>
       <h1 style={{ color: '#ffff', marginBottom: '30px', fontSize: '2.5rem', textAlign: 'center' }}>
         บริการแนะนำอนิเมะของเรา
       </h1>
 
+      {/* ปุ่มหมวดหมู่ */}
       <div
         style={{
           marginBottom: '30px',
@@ -193,7 +152,7 @@ export default function AnimePage() {
           gap: '10px'
         }}
       >
-        {/* ปุ่มรวมแบบขอบรุ้ง */}
+        {/* ปุ่มรวม */}
         <div
           style={{
             background: 'linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff)',
@@ -319,7 +278,7 @@ export default function AnimePage() {
         })}
       </div>
 
-      {/* รีวิวจากแฟนอนิเมะ (ไม่แก้ไขตามคำขอ) */}
+      {/* รีวิวจากแฟนอนิเมะ พร้อม effect hover */}
       <div style={{ marginTop: '60px' }}>
         <h2 style={{ color: '#ffff', marginBottom: '20px', textAlign: 'center' }}>
           รีวิวจากแฟนอนิเมะ
@@ -331,15 +290,30 @@ export default function AnimePage() {
           flexWrap: 'wrap',
         }}>
           {testimonials.map(testi => (
-            <div key={testi.id} style={{
-              backgroundColor: '#222',
-              borderRadius: '12px',
-              padding: '20px',
-              maxWidth: '300px',
-              color: '#eee',
-              boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
-              userSelect: 'none',
-            }}>
+            <div
+              key={testi.id}
+              style={{
+                backgroundColor: '#222',
+                borderRadius: '12px',
+                padding: '20px',
+                maxWidth: '300px',
+                color: '#eee',
+                boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
+                userSelect: 'none',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease',
+                cursor: 'pointer',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.transform = 'scale(1.05)';
+                e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.6)';
+                e.currentTarget.style.backgroundColor = '#333';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.boxShadow = '0 4px 10px rgba(0,0,0,0.3)';
+                e.currentTarget.style.backgroundColor = '#222';
+              }}
+            >
               <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                 <Image
                   src={testi.image}
