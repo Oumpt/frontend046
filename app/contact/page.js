@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -54,10 +55,10 @@ export default function Contact() {
     address: "123 ถนนพัง แขวงลอย เขตอาถรรพ์ ลำพูน 50100",
     workingHours: "จันทร์-ศุกร์: 8:00 - 17:00 น.",
     socialMedia: [
-      { name: "Instagram", icon: "bi-instagram", color: "#1E90FF", link: "#" },
-      { name: "Facebook", icon: "bi-facebook", color: "#FF4500", link: "#" },
-      { name: "Line", icon: "bi-line", color: "#32CD32", link: "#" },
-      { name: "TikTok", icon: "bi-tiktok", color: "#1E90FF", link: "#" }
+      { name: "Instagram", icon: "bi-instagram", color: "#1E90FF", link: "/" },
+      { name: "Facebook", icon: "bi-facebook", color: "#FF4500", link: "/" },
+      { name: "Line", icon: "bi-line", color: "#32CD32", link: "/" },
+      { name: "TikTok", icon: "bi-tiktok", color: "#1E90FF", link: "/" }
     ],
     faq: [
       {
@@ -97,7 +98,7 @@ export default function Contact() {
         </p>
         <div className="d-flex justify-content-center gap-3 mb-4">
           {contactInfo.socialMedia.map((social, index) => (
-            <a key={index} href={social.link} className="text-decoration-none" target="_blank" rel="noopener noreferrer">
+              <Link key={index} href={social.link} className="text-decoration-none">
               <div style={{ 
                 width: '50px', 
                 height: '50px', 
@@ -111,7 +112,7 @@ export default function Contact() {
               }}>
                 <i className={`bi ${social.icon} fs-4 text-white`}></i>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
@@ -302,7 +303,7 @@ export default function Contact() {
                 <p><strong>เวลาทำการ:</strong> {contactInfo.workingHours}</p>
                 <div className="d-flex gap-3 mt-3">
                   {contactInfo.socialMedia.map((social, idx) => (
-                    <a key={idx} href={social.link} className="text-decoration-none" target="_blank" rel="noopener noreferrer">
+                    <Link key={idx} href={social.link} className="text-decoration-none">
                       <div style={{ 
                         width: '50px', 
                         height: '50px', 
@@ -315,7 +316,7 @@ export default function Contact() {
                       }}>
                         <i className={`bi ${social.icon} fs-4 text-white`}></i>
                       </div>
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </div>
