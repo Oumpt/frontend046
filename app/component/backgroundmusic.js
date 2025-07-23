@@ -3,7 +3,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 
 export default function BackgroundMusic() {
   const audioRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(false); // เล่นเพลงตั้งแต่เริ่ม
+  const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.3);
   const [showControls, setShowControls] = useState(false);
   const [showVolumeControl, setShowVolumeControl] = useState(false);
@@ -13,7 +13,7 @@ export default function BackgroundMusic() {
       audioRef.current.volume = volume;
       if (isPlaying) {
         audioRef.current.play().catch(() => {
-          // autoplay โดนบล็อค อาจต้องให้ user กดก่อน
+          // autoplay อาจโดนบล็อค ต้องให้ user กดก่อน
         });
       } else {
         audioRef.current.pause();
@@ -21,7 +21,6 @@ export default function BackgroundMusic() {
     }
   }, [isPlaying, volume]);
 
-  // ซ่อน controls ถ้าคลิกนอกเมนู
   const containerRef = useRef(null);
   const handleClickOutside = useCallback(
     (e) => {
@@ -30,7 +29,7 @@ export default function BackgroundMusic() {
         setShowVolumeControl(false);
       }
     },
-    [setShowControls, setShowVolumeControl]
+    []
   );
 
   useEffect(() => {
@@ -67,9 +66,9 @@ export default function BackgroundMusic() {
         cursor: 'default',
       }}
     >
-      {/* ปุ่มเปิด/ปิดเมนู */}
       <button
         onClick={() => setShowControls((v) => !v)}
+        aria-label={showControls ? 'ซ่อนเมนูเพลง' : 'แสดงเมนูเพลง'}
         style={{
           backgroundColor: '#555',
           color: '#fff',
@@ -85,17 +84,15 @@ export default function BackgroundMusic() {
           alignItems: 'center',
           userSelect: 'none',
         }}
-        aria-label={showControls ? 'ซ่อนเมนูเพลง' : 'แสดงเมนูเพลง'}
       >
         🎵
       </button>
 
-      {/* ถ้าโชว์เมนู ให้แสดงปุ่มควบคุม */}
       {showControls && (
         <>
-          {/* ปุ่มเปิด/ปิดเพลง */}
           <button
             onClick={() => setIsPlaying(!isPlaying)}
+            aria-label={isPlaying ? 'ปิดเพลง' : 'เปิดเพลง'}
             style={{
               backgroundColor: isPlaying ? '#FF0055' : '#555',
               color: '#fff',
@@ -105,14 +102,13 @@ export default function BackgroundMusic() {
               cursor: 'pointer',
               flexShrink: 0,
             }}
-            aria-label={isPlaying ? 'ปิดเพลง' : 'เปิดเพลง'}
           >
             {isPlaying ? '🔊 ปิดเพลง' : '🔈 เปิดเพลง'}
           </button>
 
-          {/* ปุ่มโชว์/ซ่อน แถบปรับเสียง */}
           <button
             onClick={() => setShowVolumeControl((v) => !v)}
+            aria-label={showVolumeControl ? 'ซ่อนแถบเสียง' : 'แสดงแถบเสียง'}
             style={{
               backgroundColor: showVolumeControl ? '#FF0055' : '#555',
               color: '#fff',
@@ -122,12 +118,10 @@ export default function BackgroundMusic() {
               cursor: 'pointer',
               flexShrink: 0,
             }}
-            aria-label={showVolumeControl ? 'ซ่อนแถบเสียง' : 'แสดงแถบเสียง'}
           >
             🎚️
           </button>
 
-          {/* แถบปรับเสียง */}
           {showVolumeControl && (
             <input
               type="range"
@@ -143,7 +137,6 @@ export default function BackgroundMusic() {
         </>
       )}
 
-      {/* เพลง */}
       <audio ref={audioRef} src="/music/jelly.mp3" loop />
     </div>
   );
