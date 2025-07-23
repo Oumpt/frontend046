@@ -1,4 +1,5 @@
 "use client";
+import Link from 'next/link';
 import { useState } from 'react';
 
 export default function Login() {
@@ -104,9 +105,9 @@ export default function Login() {
         </div>
              
         <div className="text-center" style={{ fontSize: '0.9rem' }}>
-          <a href="/register" className="me-3" style={{ color: '#fff' }}>สมัครสมาชิก</a>
+          <Link href="/register" className="me-3" style={{ color: '#fff' }}>สมัครสมาชิก</Link>
           |
-          <a href="/forgot-password" className="ms-3" style={{ color: '#fff' }}>หากลืมรหัสผ่าน</a>
+          <Link href="/forgot-password" className="ms-3" style={{ color: '#fff' }}>หากลืมรหัสผ่าน</Link>
         </div>
 
       </form>
