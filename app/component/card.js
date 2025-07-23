@@ -20,9 +20,9 @@ export default function Card() {
     aka: "อากิระเดอะเบส",
     fu: "แขนกลคนขาหาย",
     fe: "คุณยายนักท่องเที่ยว",
-    golden: "Golden Kamuy",
-    drstone: "Dr. Stone",
-    titan: "Attack on Titan",
+    golden: "ขุดทองกันทีหลังเขา",
+    drstone: "หมอหินสุดเหลี่ยมกับพ้องเพื่อน",
+    titan: "มนุษย์เปรตเตะกำแพงเป็นงานอดิเรก",
   };
 
   const titles = {
