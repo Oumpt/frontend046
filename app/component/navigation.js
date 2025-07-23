@@ -48,7 +48,7 @@ export default function Navbar() {
           <Link href="/contact" className="nav-link" aria-disabled="true" style={{color:"white"}}>ติดต่อเรา</Link>
         </li>
             <li className="nav-item ms-4">
-              <a
+              <Link
                 href="/login"
                 className="btn btn-primary"
                 role="button"
@@ -61,7 +61,7 @@ export default function Navbar() {
                     padding: "6px 16px" }}
               >
                 เข้าสู่ระบบ
-              </a>
+              </Link>
             </li>
       </ul>
 
