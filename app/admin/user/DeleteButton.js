@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import styles from './DeleteButton.module.css';
+import styles from './DeleteButton.module.css';  // ไฟล์ CSS Module
 
 export default function DeleteButton({ id }) {
   const router = useRouter();
@@ -18,8 +18,7 @@ export default function DeleteButton({ id }) {
       });
       if (!res.ok) throw new Error('Failed to delete user.');
 
-      router.refresh(); // รีเฟรชหน้าถ้าใช้ SSR แบบเดิม
-      // หรือถ้าใช้ polling ไม่ต้องรีเฟรชก็ได้
+      router.refresh();  // รีเฟรชหน้า SSR เพื่อดึงข้อมูลใหม่
     } catch (error) {
       alert('Error deleting user: ' + error.message);
     } finally {
