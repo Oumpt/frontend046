@@ -303,11 +303,11 @@ export default function Register() {
                 onChange={handleChange}
               />
               <label className="form-check-label" htmlFor={genderOption}>
-                {genderOption === "male"
+                {genderOption === "ชาย"
                   ? "ชาย"
-                  : genderOption === "female"
+                  : genderOption === "หญิง"
                   ? "หญิง"
-                  : genderOption === "other"
+                  : genderOption === "อื่นๆ"
                   ? "อื่น ๆ"
                   : "ไม่ระบุ"}
               </label>

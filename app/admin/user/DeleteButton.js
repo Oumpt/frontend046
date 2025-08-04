@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import styles from './DeleteButton.module.css'; // <-- import css module
 
 export default function DeleteButton({ id }) {
   const router = useRouter();
@@ -14,7 +15,6 @@ export default function DeleteButton({ id }) {
       });
       if (!res.ok) throw new Error('Failed to delete user.');
 
-      // รีเฟรชหน้า เพื่อดึงข้อมูลใหม่
       router.refresh();
     } catch (error) {
       alert('Error deleting user: ' + error.message);
@@ -23,19 +23,10 @@ export default function DeleteButton({ id }) {
 
   return (
     <button
-      className="btn btn-danger btn-sm"
+      className={`btn btn-danger btn-sm ${styles.deleteBtn}`}
       onClick={handleDelete}
     >
       <i className="fa fa-trash"></i> Del
-      <style jsx>{`
-        button {
-          cursor: pointer;
-        }
-        button:hover {
-          background-color: #c82333;
-          border-color: #bd2130;
-        }
-      `}</style>
     </button>
   );
 }
