@@ -1,32 +1,24 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Link from 'next/link';
 import DeleteButton from './DeleteButton';
 
-export default function AdminUserPage() {
-  const [items, setItems] = useState([]);
-  const [error, setError] = useState(null);
+// ✅ แก้ตรงนี้ให้ไม่ใช้ cache
+async function getUsers() {
+  const res = await fetch('http://itdev.cmtc.ac.th:3000/api/users', {
+    cache: 'no-store'
+  });
+  if (!res.ok) {
+    throw new Error('Failed to fetch users');
+  }
+  return res.json();
+}
 
-  const fetchUsers = async () => {
-    try {
-      const res = await fetch('http://itdev.cmtc.ac.th:3000/api/users', { cache: 'no-store' });
-      if (!res.ok) throw new Error('Failed to fetch users');
-      const data = await res.json();
-      setItems(data);
-      setError(null);
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
-  useEffect(() => {
-    fetchUsers();
-    const interval = setInterval(fetchUsers, 5000); // fetch ทุก 5 วิ
-    return () => clearInterval(interval);
-  }, []);
-
-  if (error) return <p className="text-danger">Error: {error}</p>;
+export default async function Page() {
+  let items = [];
+  try {
+    items = await getUsers();
+  } catch (error) {
+    return <p className="text-danger">Error: {error.message}</p>;
+  }
 
   return (
     <>
