@@ -12,7 +12,7 @@ export default function Register() {
     prefix: "",
     firstname: "",
     lastname: "",
-    fullname: "",   // เพิ่มตรงนี้
+    fullname: "",
     address: "",
     gender: "",
     birthdate: "",
@@ -37,7 +37,7 @@ export default function Register() {
     if (!formData.prefix) newErrors.prefix = "กรุณาเลือกคำนำหน้า";
     if (!formData.firstname) newErrors.firstname = "กรุณากรอกชื่อ";
     if (!formData.lastname) newErrors.lastname = "กรุณากรอกนามสกุล";
-    if (!formData.fullname) newErrors.fullname = "กรุณากรอกชื่อเต็ม"; // validate fullname
+    if (!formData.fullname) newErrors.fullname = "กรุณากรอกชื่อเต็ม";
     if (!formData.address) newErrors.address = "กรุณากรอกที่อยู่";
     if (!formData.gender) newErrors.gender = "กรุณาเลือกเพศ";
     if (!formData.birthdate) newErrors.birthdate = "กรุณาเลือกวันเกิด";
@@ -56,15 +56,23 @@ export default function Register() {
     }
     setErrors({});
 
+    // 🔧 แก้ตรงนี้: แปลงค่า gender จากภาษาไทยเป็นค่าที่เซิร์ฟเวอร์รับได้
+    const mapGenderToApi = {
+      ชาย: "male",
+      หญิง: "female",
+      "อื่น ๆ": "other",
+      "ไม่ระบุ": "none",
+    };
+
     const submitData = {
       username: formData.username,
       password: formData.password,
       prefix: formData.prefix,
       firstname: formData.firstname,
       lastname: formData.lastname,
-      fullname: formData.fullname,  // ส่ง fullname ด้วย
+      fullname: formData.fullname,
       address: formData.address,
-      sex: formData.gender,
+      sex: mapGenderToApi[formData.gender] || "", // แปลงค่าเพศเป็น api format
       birthday: formData.birthdate,
     };
 
@@ -129,10 +137,7 @@ export default function Register() {
           textShadow: "2px 2px 4px rgba(0, 0, 0, 0.6)",
         }}
       >
-        <h1
-          className="text-center textwhitek mb-4"
-          style={{ fontWeight: "bold" }}
-        >
+        <h1 className="text-center textwhitek mb-4" style={{ fontWeight: "bold" }}>
           สมัครสมาชิก
         </h1>
 
@@ -152,9 +157,7 @@ export default function Register() {
             onChange={handleChange}
             placeholder="โปรดกรอกชื่อผู้ใช้"
           />
-          {errors.username && (
-            <div className="text-danger">{errors.username}</div>
-          )}
+          {errors.username && <div className="text-danger">{errors.username}</div>}
         </div>
 
         {/* Password */}
@@ -173,9 +176,7 @@ export default function Register() {
             onChange={handleChange}
             placeholder="กรุณาตั้งรหัสผ่าน"
           />
-          {errors.password && (
-            <div className="text-danger">{errors.password}</div>
-          )}
+          {errors.password && <div className="text-danger">{errors.password}</div>}
         </div>
 
         {/* Prefix */}
@@ -218,9 +219,7 @@ export default function Register() {
             onChange={handleChange}
             placeholder="กรุณากรอกชื่อของคุณ"
           />
-          {errors.firstname && (
-            <div className="text-danger">{errors.firstname}</div>
-          )}
+          {errors.firstname && <div className="text-danger">{errors.firstname}</div>}
         </div>
 
         {/* Lastname */}
@@ -239,9 +238,7 @@ export default function Register() {
             onChange={handleChange}
             placeholder="กรุณากรอกนามสกุลของคุณ"
           />
-          {errors.lastname && (
-            <div className="text-danger">{errors.lastname}</div>
-          )}
+          {errors.lastname && <div className="text-danger">{errors.lastname}</div>}
         </div>
 
         {/* Fullname */}
@@ -260,9 +257,7 @@ export default function Register() {
             onChange={handleChange}
             placeholder="กรุณากรอกชื่อเต็ม"
           />
-          {errors.fullname && (
-            <div className="text-danger">{errors.fullname}</div>
-          )}
+          {errors.fullname && <div className="text-danger">{errors.fullname}</div>}
         </div>
 
         {/* Address */}
@@ -281,9 +276,7 @@ export default function Register() {
             rows={3}
             placeholder="กรุณากรอกที่อยู่ของคุณ"
           />
-          {errors.address && (
-            <div className="text-danger">{errors.address}</div>
-          )}
+          {errors.address && <div className="text-danger">{errors.address}</div>}
         </div>
 
         {/* Gender */}
@@ -291,7 +284,7 @@ export default function Register() {
           เพศ
         </label>
         <div className="mb-3 text-start">
-          {["male", "female", "other", "none"].map((genderOption) => (
+          {["ชาย", "หญิง", "อื่น ๆ", "ไม่ระบุ"].map((genderOption) => (
             <div className="form-check form-check-inline" key={genderOption}>
               <input
                 className="form-check-input"
@@ -303,13 +296,7 @@ export default function Register() {
                 onChange={handleChange}
               />
               <label className="form-check-label" htmlFor={genderOption}>
-                {genderOption === "ชาย"
-                  ? "ชาย"
-                  : genderOption === "หญิง"
-                  ? "หญิง"
-                  : genderOption === "อื่นๆ"
-                  ? "อื่น ๆ"
-                  : "ไม่ระบุ"}
+                {genderOption}
               </label>
             </div>
           ))}
@@ -332,9 +319,7 @@ export default function Register() {
             onChange={handleChange}
             aria-label="วันเกิด"
           />
-          {errors.birthdate && (
-            <div className="text-danger">{errors.birthdate}</div>
-          )}
+          {errors.birthdate && <div className="text-danger">{errors.birthdate}</div>}
         </div>
 
         {/* Terms */}
