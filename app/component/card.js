@@ -7,6 +7,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 
 export default function Card() {
+  const [mounted, setMounted] = useState(false);
   const images = {
     aka: { default: "/aka.jpg", hover: "/aka_alt.jpg" },
     fu: { default: "/fu.jpg", hover: "/fu_alt.jpg" },
@@ -40,6 +41,11 @@ export default function Card() {
   const [imagesLoaded, setImagesLoaded] = useState({});
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return; // โหลดรูป hover ก็ต่อเมื่อ mounted จริงๆ
     const loadPromises = keys.map(
       (key) =>
         new Promise((resolve) => {
@@ -57,9 +63,20 @@ export default function Card() {
       });
       setImagesLoaded(loadedMap);
     });
-  }, []);
+  }, [mounted]);
 
   const canShowHover = (key) => imagesLoaded[key];
+
+  if (!mounted) {
+    return (
+      <div
+        className="container-fluid"
+        style={{ padding: "1rem", color: "#fff", textAlign: "center" }}
+      >
+        กำลังโหลด...
+      </div>
+    );
+  }
 
   return (
     <div className="container-fluid" style={{ padding: "1rem" }}>
