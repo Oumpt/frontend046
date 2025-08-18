@@ -1,10 +1,14 @@
-import Link from 'next/link';
-import DeleteButton from './DeleteButton';
+'use client'; // ✅ ต้องมีเพื่อใช้ localStorage และ useEffect
 
-// ✅ แก้ตรงนี้ให้ไม่ใช้ cache
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import DeleteButton from './DeleteButton'; // ✅ ปุ่มลบยังคงใช้เหมือนเดิม
+
+// ฟังก์ชันโหลด users (ไม่ใช้ cache)
 async function getUsers() {
   const res = await fetch('http://itdev.cmtc.ac.th:3000/api/users', {
-    cache: 'no-store'
+    cache: 'no-store',
   });
   if (!res.ok) {
     throw new Error('Failed to fetch users');
@@ -12,12 +16,32 @@ async function getUsers() {
   return res.json();
 }
 
-export default async function Page() {
-  let items = [];
-  try {
-    items = await getUsers();
-  } catch (error) {
-    return <p className="text-danger">Error: {error.message}</p>;
+export default function Page() {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      router.push('/login'); // ✅ redirect ถ้าไม่มี token
+      return;
+    }
+
+    // โหลด users ถ้ามี token
+    getUsers()
+      .then((data) => {
+        setItems(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        setLoading(false);
+      });
+  }, [router]);
+
+  if (loading) {
+    return <div className="text-center"><h1>Loading...</h1></div>;
   }
 
   return (
