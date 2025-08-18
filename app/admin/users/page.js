@@ -94,7 +94,7 @@ export default async function Page() {
                       <td style={{ border: '1px solid #dee2e6' }}>{item.sex}</td>
                       <td style={{ border: '1px solid #dee2e6' }}>{item.birthday}</td>
                       <td style={{ border: '1px solid #dee2e6' }}>
-                        <Link href={`/admin/user/edit/${item.id}`}>
+                        <Link href={`/admin/users/edit/${item.id}`}>
                           <button className="btn btn-warning btn-sm">Edit</button>
                         </Link>
                       </td>
