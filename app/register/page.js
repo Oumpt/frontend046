@@ -56,14 +56,7 @@ export default function Register() {
     }
     setErrors({});
 
-    // 🔧 แก้ตรงนี้: แปลงค่า gender จากภาษาไทยเป็นค่าที่เซิร์ฟเวอร์รับได้
-    const mapGenderToApi = {
-      ชาย: "male",
-      หญิง: "female",
-      "อื่น ๆ": "other",
-      "ไม่ระบุ": "none",
-    };
-
+    // ✅ ส่งเพศเป็นภาษาไทย ตรง ๆ
     const submitData = {
       username: formData.username,
       password: formData.password,
@@ -72,7 +65,7 @@ export default function Register() {
       lastname: formData.lastname,
       fullname: formData.fullname,
       address: formData.address,
-      sex: mapGenderToApi[formData.gender] || "", // แปลงค่าเพศเป็น api format
+      sex: formData.gender, // ✅ ใช้ภาษาไทยเลย
       birthday: formData.birthdate,
     };
 
@@ -143,14 +136,10 @@ export default function Register() {
 
         {/* Username */}
         <div className="mb-3 text-start">
-          <label htmlFor="username" className="form-label">
-            Username
-          </label>
+          <label htmlFor="username" className="form-label">Username</label>
           <input
             type="text"
-            className={`form-control ${
-              errors.username ? "border border-danger" : ""
-            }`}
+            className={`form-control ${errors.username ? "border border-danger" : ""}`}
             id="username"
             name="username"
             value={formData.username}
@@ -162,14 +151,10 @@ export default function Register() {
 
         {/* Password */}
         <div className="mb-3 text-start">
-          <label htmlFor="password" className="form-label">
-            Password
-          </label>
+          <label htmlFor="password" className="form-label">Password</label>
           <input
             type="password"
-            className={`form-control ${
-              errors.password ? "border border-danger" : ""
-            }`}
+            className={`form-control ${errors.password ? "border border-danger" : ""}`}
             id="password"
             name="password"
             value={formData.password}
@@ -181,21 +166,15 @@ export default function Register() {
 
         {/* Prefix */}
         <div className="mb-3 text-start position-relative">
-          <label htmlFor="prefix" className="form-label">
-            คำนำหน้าชื่อ
-          </label>
+          <label htmlFor="prefix" className="form-label">คำนำหน้าชื่อ</label>
           <select
             id="prefix"
             name="prefix"
-            className={`form-control ${
-              errors.prefix ? "border border-danger" : ""
-            }  pe-5`}
+            className={`form-control ${errors.prefix ? "border border-danger" : ""} pe-5`}
             value={formData.prefix}
             onChange={handleChange}
           >
-            <option value="" disabled>
-              เลือกคำนำหน้า
-            </option>
+            <option value="" disabled>เลือกคำนำหน้า</option>
             <option value="นาย">นาย</option>
             <option value="นาง">นาง</option>
             <option value="นางสาว">นางสาว</option>
@@ -205,14 +184,10 @@ export default function Register() {
 
         {/* Firstname */}
         <div className="mb-3 text-start">
-          <label htmlFor="firstname" className="form-label">
-            ชื่อของคุณ
-          </label>
+          <label htmlFor="firstname" className="form-label">ชื่อของคุณ</label>
           <input
             type="text"
-            className={`form-control ${
-              errors.firstname ? "border border-danger" : ""
-            }`}
+            className={`form-control ${errors.firstname ? "border border-danger" : ""}`}
             id="firstname"
             name="firstname"
             value={formData.firstname}
@@ -224,14 +199,10 @@ export default function Register() {
 
         {/* Lastname */}
         <div className="mb-3 text-start">
-          <label htmlFor="lastname" className="form-label">
-            นามสกุลของคุณ
-          </label>
+          <label htmlFor="lastname" className="form-label">นามสกุลของคุณ</label>
           <input
             type="text"
-            className={`form-control ${
-              errors.lastname ? "border border-danger" : ""
-            }`}
+            className={`form-control ${errors.lastname ? "border border-danger" : ""}`}
             id="lastname"
             name="lastname"
             value={formData.lastname}
@@ -243,14 +214,10 @@ export default function Register() {
 
         {/* Fullname */}
         <div className="mb-3 text-start">
-          <label htmlFor="fullname" className="form-label">
-            ชื่อเต็ม
-          </label>
+          <label htmlFor="fullname" className="form-label">ชื่อเต็ม</label>
           <input
             type="text"
-            className={`form-control ${
-              errors.fullname ? "border border-danger" : ""
-            }`}
+            className={`form-control ${errors.fullname ? "border border-danger" : ""}`}
             id="fullname"
             name="fullname"
             value={formData.fullname}
@@ -262,13 +229,9 @@ export default function Register() {
 
         {/* Address */}
         <div className="mb-3 text-start">
-          <label htmlFor="address" className="form-label">
-            ที่อยู่ของคุณ
-          </label>
+          <label htmlFor="address" className="form-label">ที่อยู่ของคุณ</label>
           <textarea
-            className={`form-control ${
-              errors.address ? "border border-danger" : ""
-            }`}
+            className={`form-control ${errors.address ? "border border-danger" : ""}`}
             id="address"
             name="address"
             value={formData.address}
@@ -280,9 +243,7 @@ export default function Register() {
         </div>
 
         {/* Gender */}
-        <label htmlFor="gender" className="form-label">
-          เพศ
-        </label>
+        <label htmlFor="gender" className="form-label">เพศ</label>
         <div className="mb-3 text-start">
           {["ชาย", "หญิง", "อื่น ๆ", "ไม่ระบุ"].map((genderOption) => (
             <div className="form-check form-check-inline" key={genderOption}>
@@ -305,19 +266,14 @@ export default function Register() {
 
         {/* Birthdate */}
         <div className="mb-3 text-start">
-          <label htmlFor="birthdate" className="form-label">
-            วันเกิด
-          </label>
+          <label htmlFor="birthdate" className="form-label">วันเกิด</label>
           <input
             type="date"
-            className={`form-control ${
-              errors.birthdate ? "border border-danger" : ""
-            }`}
+            className={`form-control ${errors.birthdate ? "border border-danger" : ""}`}
             id="birthdate"
             name="birthdate"
             value={formData.birthdate}
             onChange={handleChange}
-            aria-label="วันเกิด"
           />
           {errors.birthdate && <div className="text-danger">{errors.birthdate}</div>}
         </div>
