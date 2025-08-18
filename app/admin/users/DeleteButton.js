@@ -2,25 +2,52 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import styles from './DeleteButton.module.css';  // ไฟล์ CSS Module
+import Swal from 'sweetalert2';
+import styles from './DeleteButton.module.css';
 
 export default function DeleteButton({ id }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
-    if (!confirm('Are you sure you want to delete this user?')) return;
+    const result = await Swal.fire({
+      title: 'แน่ใจแล้วน๊าา?',
+      text: 'มันยังไม่จบหรอก555!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'ใช่, ลบเลย!',
+    });
+
+    if (!result.isConfirmed) return;
 
     setLoading(true);
     try {
       const res = await fetch(`http://itdev.cmtc.ac.th:3000/api/users/${id}`, {
         method: 'DELETE',
       });
-      if (!res.ok) throw new Error('Failed to delete user.');
 
-      router.refresh();  // รีเฟรชหน้า SSR เพื่อดึงข้อมูลใหม่
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(errorText || 'Failed to delete user.');
+      }
+
+      await Swal.fire({
+        icon: 'success',
+        title: 'ลบละจ้า!',
+        text: 'หายไปแย้ว.',
+        timer: 2000,
+        showConfirmButton: false,
+      });
+
+      router.refresh(); // refresh SSR data
     } catch (error) {
-      alert('Error deleting user: ' + error.message);
+      await Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'Error deleting user: ' + error.message,
+      });
     } finally {
       setLoading(false);
     }
