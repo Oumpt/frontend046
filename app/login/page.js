@@ -107,7 +107,7 @@ export default function Login() {
         <div className="text-center" style={{ fontSize: '0.9rem' }}>
           <Link href="/register" className="me-3" style={{ color: '#fff' }}>สมัครสมาชิก</Link>
           |
-          <Link href="/forgot-password" className="ms-3" style={{ color: '#fff' }}>หากลืมรหัสผ่าน</Link>
+          <Link href="/register" className="ms-3" style={{ color: '#fff' }}>หากลืมรหัสผ่าน</Link>
         </div>
 
       </form>
