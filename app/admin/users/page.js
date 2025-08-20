@@ -27,18 +27,25 @@ export default function Page() {
       return;
     }
 
-    getUsers()
-      .then((data) => {
-        setItems(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-        setLoading(false);
-      });
+    const fetchData = () => {
+      getUsers()
+        .then((data) => {
+          setItems(data);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          setLoading(false);
+        });
+    };
+
+    fetchData();
+
+    const intervalId = setInterval(fetchData, 5000); // ดึงข้อมูลทุก 5 วินาที
+
+    return () => clearInterval(intervalId); // เคลียร์ interval ตอน component unmount
   }, [router]);
 
-  // ✅ ฟังก์ชันลบ user ออกจาก state
   const handleDeleteUser = (deletedId) => {
     setItems((prevItems) => prevItems.filter((item) => item.id !== deletedId));
   };
