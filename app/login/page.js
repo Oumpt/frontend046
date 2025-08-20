@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function Login() {
   const [formData, setFormData] = useState({ username: '', password: '' });
@@ -117,13 +118,13 @@ export default function Login() {
         </div>
 
         <div className="text-center" style={{ fontSize: '0.9rem' }}>
-          <a href="/register" className="me-3" style={{ color: '#fff' }}>
+          <Link href="/register" className="me-3" style={{ color: '#fff' }}>
             สมัครสมาชิก
-          </a>{' '}
+          </Link>{' '}
           |{' '}
-          <a href="/forgot-password" className="ms-3" style={{ color: '#fff' }}>
+          <Link href="/forgot-password" className="ms-3" style={{ color: '#fff' }}>
             หากลืมรหัสผ่าน
-          </a>
+          </Link>
         </div>
       </form>
     </div>
