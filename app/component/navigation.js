@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";  // นำเข้า SweetAlert2
 
 export default function Navbar() {
   const [tokenState, setToken] = useState("");
@@ -26,12 +27,32 @@ export default function Navbar() {
     setUsername(storedUsername);
   }, []);
 
-  const handleSignOut = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("username");
-    setToken(null);
-    setUsername("");
-    router.push("/login");
+  // ฟังก์ชัน sign out พร้อม popup ยืนยัน
+  const handleSignOut = async () => {
+    const result = await Swal.fire({
+      title: 'ยืนยันการออกจากระบบ?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'ใช่, ออกจากระบบ',
+      cancelButtonText: 'ยกเลิก',
+    });
+
+    if (result.isConfirmed) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("username");
+      setToken(null);
+      setUsername("");
+      router.push("/login");
+
+      Swal.fire({
+        title: 'ออกจากระบบเรียบร้อย',
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    }
   };
 
   return (
@@ -81,7 +102,7 @@ export default function Navbar() {
                 <li className="nav-item ms-2">
                   <button
                     type="button"
-                    onClick={handleSignOut}
+                    onClick={handleSignOut} // ใช้ฟังก์ชันใหม่ที่มี popup confirm
                     className="btn btn-danger"
                     style={{
                       color: "white",
