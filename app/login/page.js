@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -10,6 +10,14 @@ export default function Login() {
   const [errors, setErrors] = useState({});
   const [loadingRedirect, setLoadingRedirect] = useState(false);
   const router = useRouter();
+
+  // 🛡️ ป้องกันผู้ใช้ที่ล็อกอินแล้วไม่ให้เข้า /login อีก
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      router.replace('/admin/users'); // หรือหน้าอื่นที่คุณต้องการ
+    }
+  }, [router]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,7 +71,7 @@ export default function Login() {
 
         setTimeout(() => {
           window.location.href = "/admin/users";
-        }, 500); // รอ 0.5 วิ ก่อน redirect
+        }, 500);
       } else {
         await Swal.fire({
           icon: 'warning',
@@ -84,6 +92,7 @@ export default function Login() {
     }
   };
 
+  // Loader เต็มจอระหว่าง redirect
   if (loadingRedirect) {
     return (
       <div
