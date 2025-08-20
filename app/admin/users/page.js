@@ -1,11 +1,10 @@
-'use client'; // ✅ ต้องมีเพื่อใช้ localStorage และ useEffect
+'use client';
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import DeleteButton from './DeleteButton'; // ✅ ปุ่มลบยังคงใช้เหมือนเดิม
+import DeleteButton from './DeleteButton';
 
-// ฟังก์ชันโหลด users (ไม่ใช้ cache)
 async function getUsers() {
   const res = await fetch('https://backend-nextjs-virid.vercel.app/api/users', {
     cache: 'no-store',
@@ -24,11 +23,10 @@ export default function Page() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
-      router.push('/login'); // ✅ redirect ถ้าไม่มี token
+      router.push('/login');
       return;
     }
 
-    // โหลด users ถ้ามี token
     getUsers()
       .then((data) => {
         setItems(data);
@@ -40,6 +38,11 @@ export default function Page() {
       });
   }, [router]);
 
+  // ✅ ฟังก์ชันลบ user ออกจาก state
+  const handleDeleteUser = (deletedId) => {
+    setItems((prevItems) => prevItems.filter((item) => item.id !== deletedId));
+  };
+
   if (loading) {
     return <div className="text-center"><h1>Loading...</h1></div>;
   }
@@ -49,10 +52,7 @@ export default function Page() {
       <br /><br /><br /><br />
       <div className="container" style={{ maxWidth: '98vw', position: 'relative' }}>
         <div className="card">
-          <div
-            className="card-header"
-            style={{ fontSize: '1.5rem', fontWeight: 'bold' }}
-          >
+          <div className="card-header" style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
             Users List
           </div>
 
@@ -65,9 +65,6 @@ export default function Page() {
               border: '1px solid #ddd',
               borderRadius: '4px',
               position: 'relative',
-              scrollbarWidth: 'thin',
-              scrollbarColor: '#888 #ddd',
-              WebkitOverflowScrolling: 'touch',
               minWidth: '1300px',
             }}
           >
@@ -76,54 +73,41 @@ export default function Page() {
             )}
 
             {items.length > 0 && (
-              <table
-                className="table table-striped table-hover"
-                style={{
-                  borderCollapse: 'collapse',
-                  width: '100%',
-                }}
-              >
-                <thead
-                  style={{
-                    backgroundColor: '#f8f9fa',
-                    borderBottom: '2px solid #dee2e6',
-                  }}
-                >
+              <table className="table table-striped table-hover">
+                <thead style={{ backgroundColor: '#f8f9fa', borderBottom: '2px solid #dee2e6' }}>
                   <tr>
-                    <th className='text-center' style={{ border: '1px solid #dee2e6' }}>#</th>
-                    <th style={{ border: '1px solid #dee2e6' }}>Firstname</th>
-                    <th style={{ border: '1px solid #dee2e6' }}>Fullname</th>
-                    <th style={{ border: '1px solid #dee2e6' }}>Lastname</th>
-                    <th style={{ border: '1px solid #dee2e6' }}>Username</th>
-                    <th style={{ border: '1px solid #dee2e6' }}>Password</th>
-                    <th style={{ border: '1px solid #dee2e6' }}>Address</th>
-                    <th style={{ border: '1px solid #dee2e6' }}>Sex</th>
-                    <th style={{ border: '1px solid #dee2e6' }}>Birthday</th>
-                    <th style={{ border: '1px solid #dee2e6' }}>Edit</th>
-                    <th style={{ border: '1px solid #dee2e6' }}>Delete</th>
+                    <th className="text-center">#</th>
+                    <th>Firstname</th>
+                    <th>Fullname</th>
+                    <th>Lastname</th>
+                    <th>Username</th>
+                    <th>Password</th>
+                    <th>Address</th>
+                    <th>Sex</th>
+                    <th>Birthday</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
                   </tr>
                 </thead>
                 <tbody>
                   {items.map((item) => (
                     <tr key={item.id}>
-                      <td className='text-center' style={{ border: '1px solid #dee2e6' }}>
-                        {item.id}
-                      </td>
-                      <td style={{ border: '1px solid #dee2e6' }}>{item.firstname}</td>
-                      <td style={{ border: '1px solid #dee2e6' }}>{item.fullname}</td>
-                      <td style={{ border: '1px solid #dee2e6' }}>{item.lastname}</td>
-                      <td style={{ border: '1px solid #dee2e6' }}>{item.username}</td>
-                      <td style={{ border: '1px solid #dee2e6' }}>{item.password}</td>
-                      <td style={{ border: '1px solid #dee2e6' }}>{item.address}</td>
-                      <td style={{ border: '1px solid #dee2e6' }}>{item.sex}</td>
-                      <td style={{ border: '1px solid #dee2e6' }}>{item.birthday}</td>
-                      <td style={{ border: '1px solid #dee2e6' }}>
+                      <td className="text-center">{item.id}</td>
+                      <td>{item.firstname}</td>
+                      <td>{item.fullname}</td>
+                      <td>{item.lastname}</td>
+                      <td>{item.username}</td>
+                      <td>{item.password}</td>
+                      <td>{item.address}</td>
+                      <td>{item.sex}</td>
+                      <td>{item.birthday}</td>
+                      <td>
                         <Link href={`/admin/users/edit/${item.id}`}>
                           <button className="btn btn-warning btn-sm">Edit</button>
                         </Link>
                       </td>
-                      <td style={{ border: '1px solid #dee2e6' }}>
-                        <DeleteButton id={item.id} />
+                      <td>
+                        <DeleteButton id={item.id} onDeleted={handleDeleteUser} />
                       </td>
                     </tr>
                   ))}

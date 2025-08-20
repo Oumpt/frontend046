@@ -3,10 +3,8 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Swal from 'sweetalert2';
-import styles from './DeleteButton.module.css';
 
-export default function DeleteButton({ id }) {
-  const router = useRouter();
+export default function DeleteButton({ id, onDeleted }) {
   const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
@@ -41,7 +39,9 @@ export default function DeleteButton({ id }) {
         showConfirmButton: false,
       });
 
-      router.refresh(); // refresh SSR data
+      // ✅ เรียก callback เพื่อแจ้งหน้า page ให้ลบ user ออกจาก state
+      onDeleted?.(id);
+
     } catch (error) {
       await Swal.fire({
         icon: 'error',
@@ -55,7 +55,7 @@ export default function DeleteButton({ id }) {
 
   return (
     <button
-      className={`btn btn-danger btn-sm ${styles.deleteBtn}`}
+      className="btn btn-danger btn-sm"
       onClick={handleDelete}
       disabled={loading}
     >
