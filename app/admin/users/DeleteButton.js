@@ -24,7 +24,7 @@ export default function DeleteButton({ id }) {
 
     setLoading(true);
     try {
-      const res = await fetch(`http://itdev.cmtc.ac.th:3000/api/users/${id}`, {
+      const res = await fetch(`https://backend-nextjs-virid.vercel.app/api/users/${id}`, {
         method: 'DELETE',
       });
 

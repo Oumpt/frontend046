@@ -7,7 +7,7 @@ import DeleteButton from './DeleteButton'; // ✅ ปุ่มลบยังค
 
 // ฟังก์ชันโหลด users (ไม่ใช้ cache)
 async function getUsers() {
-  const res = await fetch('http://itdev.cmtc.ac.th:3000/api/users', {
+  const res = await fetch('https://backend-nextjs-virid.vercel.app/api/users', {
     cache: 'no-store',
   });
   if (!res.ok) {

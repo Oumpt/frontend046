@@ -29,40 +29,70 @@ export default function Login() {
       setErrors(validationErrors);
       return;
     }
+
     setErrors({});
 
-    // TODO: แทนที่ด้วย API login จริง
-    if (formData.username === 'admin' && formData.password === '1234') {
-      // สมมติ login สำเร็จ
-      localStorage.setItem('token', 'fake-jwt-token');
-      localStorage.setItem('username', formData.username);
-
-      await Swal.fire({
-        icon: 'success',
-        title: 'ล็อกอินสำเร็จ',
-        text: `ยินดีต้อนรับคุณ ${formData.username}`,
-        confirmButtonText: 'ตกลง',
+    try {
+      const res = await fetch('https://backend-nextjs-virid.vercel.app/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password,
+        }),
       });
 
-      router.push('/admin/users');
-    } else {
+      const data = await res.json();
+
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('username', formData.username);
+
+        await Swal.fire({
+          icon: 'success',
+          title: '<h3>ล็อกอินสำเร็จ!</h3>',
+          text: `ยินดีต้อนรับคุณ ${formData.username}`,
+          showConfirmButton: false,
+          timer: 2000,
+        });
+
+        // router.push ไม่สามารถใช้งานได้เสมอในบางกรณี (เช่นหลัง Swal)
+        window.location.href = "/admin/users";
+      } else {
+        await Swal.fire({
+          icon: 'warning',
+          title: '<h3>ล็อกอินไม่สำเร็จ!</h3>',
+          text: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง',
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        router.push('/login');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
       Swal.fire({
         icon: 'error',
-        title: 'ล็อกอินไม่สำเร็จ',
-        text: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง',
+        title: 'เกิดข้อผิดพลาด',
+        text: 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้',
       });
     }
   };
 
   return (
-    <div className="d-flex justify-content-center mt-5" style={{ maxWidth: '400px', padding: '50px', margin: '100px auto' }}>
+    <div
+      className="d-flex justify-content-center mt-5"
+      style={{ maxWidth: '400px', padding: '50px', margin: '100px auto' }}
+    >
       <form
         onSubmit={handleSubmit}
         className="p-4 border border-dark rounded"
         style={{
           width: '100%',
           maxWidth: '400px',
-          backgroundImage: 'url("https://i.pinimg.com/736x/34/06/5a/34065a361094df5e01063f23e4c7d83c.jpg")',
+          backgroundImage:
+            'url("https://i.pinimg.com/736x/34/06/5a/34065a361094df5e01063f23e4c7d83c.jpg")',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           color: '#fff',
@@ -122,7 +152,7 @@ export default function Login() {
             สมัครสมาชิก
           </Link>{' '}
           |{' '}
-          <Link href="/forgot-password" className="ms-3" style={{ color: '#fff' }}>
+          <Link href="/register" className="ms-3" style={{ color: '#fff' }}>
             หากลืมรหัสผ่าน
           </Link>
         </div>
