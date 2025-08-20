@@ -8,6 +8,7 @@ import Link from 'next/link';
 export default function Login() {
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [errors, setErrors] = useState({});
+  const [loadingRedirect, setLoadingRedirect] = useState(false);
   const router = useRouter();
 
   const handleChange = (e) => {
@@ -58,8 +59,11 @@ export default function Login() {
           timer: 2000,
         });
 
-        // router.push ไม่สามารถใช้งานได้เสมอในบางกรณี (เช่นหลัง Swal)
-        window.location.href = "/admin/users";
+        setLoadingRedirect(true); // แสดงหน้ารอโหลดเต็มจอ
+
+        setTimeout(() => {
+          window.location.href = "/admin/users";
+        }, 500); // รอ 0.5 วิ ก่อน redirect
       } else {
         await Swal.fire({
           icon: 'warning',
@@ -79,6 +83,35 @@ export default function Login() {
       });
     }
   };
+
+  if (loadingRedirect) {
+    return (
+      <div
+        style={{
+          position: 'fixed',
+          inset: 0,
+          backgroundColor: '#ffffff',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 9999,
+        }}
+      >
+        <div
+          className="loader ease-linear rounded-full border-8 border-t-8 border-gray-300 h-16 w-16 mb-4"
+          style={{ borderTopColor: '#3b82f6', animation: 'spin 1s linear infinite' }}
+        ></div>
+        <h2 style={{ fontWeight: 'bold', color: '#333' }}>กำลังโหลด...</h2>
+        <style>{`
+          @keyframes spin {
+            0% { transform: rotate(0deg);}
+            100% { transform: rotate(360deg);}
+          }
+        `}</style>
+      </div>
+    );
+  }
 
   return (
     <div
