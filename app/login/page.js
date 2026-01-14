@@ -16,7 +16,7 @@ export default function Login() {
     setMounted(true);
     const token = localStorage.getItem('token');
     if (token) {
-      router.replace('/admin/users');
+      router.replace('/admin/overview');
     }
   }, [router]);
 
@@ -68,7 +68,7 @@ export default function Login() {
         setLoadingRedirect(true);
 
         setTimeout(() => {
-          window.location.href = "/admin/users";
+          window.location.href = "/admin/overview";
         }, 500);
       } else {
         await Swal.fire({

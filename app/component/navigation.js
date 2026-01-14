@@ -7,24 +7,21 @@ import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 
 export default function Navbar() {
-  const [tokenState, setToken] = useState(null); // ปรับเป็น null เริ่มต้น
+  const [tokenState, setToken] = useState(null);
   const [username, setUsername] = useState("");
-  const [mounted, setMounted] = useState(false); // ✅ เพิ่มตัวเช็ค Mounted
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    setMounted(true); // ✅ ยืนยันว่ารันบน Client แล้ว
-
-    // โหลด Bootstrap JS (จำเป็นสำหรับปุ่ม Hamburger บนมือถือ)
+    setMounted(true);
     import('bootstrap/dist/js/bootstrap.bundle.min.js');
 
-    // อ่านข้อมูลจาก LocalStorage
     const token = localStorage.getItem("token");
     const storedUsername = localStorage.getItem("username");
     
     if (token) {
       setToken(token);
-      setUsername(storedUsername || "User");
+      setUsername(storedUsername || "Admin");
     }
   }, []);
 
@@ -38,7 +35,7 @@ export default function Navbar() {
       cancelButtonColor: '#6e7881',
       confirmButtonText: 'ใช่, ออกจากระบบ',
       cancelButtonText: 'ยกเลิก',
-      reverseButtons: true // ให้ยกเลิกอยู่ซ้ายตามมาตรฐาน
+      reverseButtons: true
     });
 
     if (result.isConfirmed) {
@@ -58,7 +55,6 @@ export default function Navbar() {
     }
   };
 
-  // ✅ ถ้ายังไม่ Mounted ไม่ต้องเรนเดอร์ส่วนที่ใช้ LocalStorage เพื่อกัน Hydration Error
   if (!mounted) return null;
 
   return (
@@ -72,15 +68,16 @@ export default function Navbar() {
         boxShadow: "0 8px 32px 0 rgba(0, 0, 0, 0.2)",
         margin: "15px",
         padding: "10px 20px",
+        zIndex: 1050
       }}
     >
       <div className="container-fluid">
-        <Link href="/" className="navbar-brand d-flex align-items-center gap-2" style={{ color: "white", fontWeight: "bold" }}>
+        {/* ลิงก์ไปหน้าแรก/Dashboard */}
+        <Link href={tokenState ? "/admin/overview" : "/"} className="navbar-brand d-flex align-items-center gap-2" style={{ color: "white", fontWeight: "bold" }}>
           <Image src="/logo.jpg" alt="Logo" width={32} height={32} className="rounded-circle" />
-          <span>FrontEnd</span>
+          <span>ADMIN PANEL</span>
         </Link>
 
-        {/* ปุ่ม Hamburger สำหรับมือถือ */}
         <button className="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
           data-bs-target="#navbarSupportedContent" style={{ filter: "invert(1)" }}
         >
@@ -89,17 +86,30 @@ export default function Navbar() {
 
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-center">
+            
+            {/* เมนูพื้นฐาน */}
             <li className="nav-item ms-lg-3">
               <Link className="nav-link text-white" href="/">หน้าแรก</Link>
             </li>
+
+            {/* ✅ เมนูที่จะโชว์เฉพาะ Admin ที่ Login แล้วเท่านั้น */}
+            {tokenState && (
+              <>
+                <li className="nav-item ms-lg-3 border-start border-white border-opacity-25 ps-lg-3">
+                  <Link className="nav-link text-info fw-bold" href="/admin/users">
+                    <i className="bi bi-people-fill me-1"></i> จัดการแอดมิน
+                  </Link>
+                </li>
+                <li className="nav-item ms-lg-3">
+                  <Link className="nav-link text-warning fw-bold" href="/admin/products">
+                    <i className="bi bi-box-seam-fill me-1"></i> คลังสินค้า
+                  </Link>
+                </li>
+              </>
+            )}
+
             <li className="nav-item ms-lg-3">
               <Link className="nav-link text-white" href="/about">เกี่ยวกับเรา</Link>
-            </li>
-            <li className="nav-item ms-lg-3">
-              <Link href="/service" className="nav-link text-white">บริการของเรา</Link>
-            </li>
-            <li className="nav-item ms-lg-3">
-              <Link href="/contact" className="nav-link text-white">ติดต่อเรา</Link>
             </li>
 
             {tokenState ? (
@@ -121,7 +131,7 @@ export default function Navbar() {
                       padding: "8px 18px"
                     }}
                   >
-                    <i className="bi bi-box-arrow-right me-1"></i> ออกจากระบบ
+                    ออกจากระบบ
                   </button>
                 </li>
               </>
@@ -139,7 +149,7 @@ export default function Navbar() {
                     color: "white"
                   }}
                 >
-                  <i className="bi bi-box-arrow-in-right me-1"></i> เข้าสู่ระบบ
+                  เข้าสู่ระบบ
                 </Link>
               </li>
             )}
