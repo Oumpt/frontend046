@@ -93,20 +93,24 @@ export default function Footer() {
                     <label htmlFor="newsletter1" className="visually-hidden">
                       Email address
                     </label>
+                    {/* ✅ เพิ่ม suppressHydrationWarning เพื่อป้องกัน Error จาก Extension */}
                     <input
                       id="newsletter1"
                       type="email"
                       className="form-control"
                       placeholder="Email address"
+                      suppressHydrationWarning={true}
                       style={{
                         backgroundColor: 'rgba(255, 255, 255, 0.05)',
                         color: '#fff',
                         border: '1px solid rgba(255, 255, 255, 0.2)',
                       }}
                     />
+                    {/* ✅ เพิ่ม suppressHydrationWarning ที่ปุ่มด้วย */}
                     <button
                       className="btn"
                       type="button"
+                      suppressHydrationWarning={true}
                       style={{
                         backgroundColor: '#fff',
                         color: '#000',

@@ -14,7 +14,7 @@ const prompt = Prompt({
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="th">
+    <html lang="th" suppressHydrationWarning>
       <head>
         <title>FrontEnd046 Pongthep</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -35,15 +35,26 @@ export default function RootLayout({ children }) {
           }
         `}</style>
       </head>
-      <body className={prompt.className} style={{ backgroundImage : 'url(/free.png)',backgroundSize: 'cover', backgroundPosition: 'center'
- }}>
+      {/* ✅ ปรับ body ให้เป็น Flexbox และสูงเต็มหน้าจอเสมอ */}
+      <body 
+        className={`${prompt.className} d-flex flex-column min-vh-100`} 
+        style={{ 
+          backgroundImage : 'url(/free.png)',
+          backgroundSize: 'cover', 
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed' // ✅ ให้พื้นหลังนิ่งเวลาเลื่อน
+        }}
+        suppressHydrationWarning
+      >
         <Navigation />
 
-        {children}
+        {/* ✅ หุ้ม children ด้วย main และใช้ flex-grow-1 เพื่อดัน Footer ลงล่างสุด */}
+        <main className="flex-grow-1">
+          {children}
+        </main>
 
         <Footer />
 
-        {/* วางปุ่มเพลงไว้ข้างล่างสุด */}
         <BackgroundMusic />
       </body>
     </html>

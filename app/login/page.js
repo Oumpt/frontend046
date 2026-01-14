@@ -9,13 +9,14 @@ export default function Login() {
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [errors, setErrors] = useState({});
   const [loadingRedirect, setLoadingRedirect] = useState(false);
+  const [mounted, setMounted] = useState(false); // ✅ ป้องกัน Hydration Error
   const router = useRouter();
 
-  // 🛡️ ป้องกันผู้ใช้ที่ล็อกอินแล้วไม่ให้เข้า /login อีก
   useEffect(() => {
+    setMounted(true);
     const token = localStorage.getItem('token');
     if (token) {
-      router.replace('/admin/users'); // หรือหน้าอื่นที่คุณต้องการ
+      router.replace('/admin/users');
     }
   }, [router]);
 
@@ -42,32 +43,29 @@ export default function Login() {
     setErrors({});
 
     try {
-      const res = await fetch('https://backend-nextjs-virid.vercel.app/api/auth/login', {
+      const apiUrl = "https://backend046.vercel.app/api/auth/login"; 
+
+      const res = await fetch(apiUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: formData.username,
-          password: formData.password,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
       });
 
       const data = await res.json();
 
-      if (data.token) {
+      if (data.success && data.token) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('username', formData.username);
 
         await Swal.fire({
           icon: 'success',
-          title: '<h3>ล็อกอินสำเร็จ!</h3>',
+          title: 'ล็อกอินสำเร็จ!',
           text: `ยินดีต้อนรับคุณ ${formData.username}`,
           showConfirmButton: false,
-          timer: 2000,
+          timer: 1500,
         });
 
-        setLoadingRedirect(true); // แสดงหน้ารอโหลดเต็มจอ
+        setLoadingRedirect(true);
 
         setTimeout(() => {
           window.location.href = "/admin/users";
@@ -75,12 +73,11 @@ export default function Login() {
       } else {
         await Swal.fire({
           icon: 'warning',
-          title: '<h3>ล็อกอินไม่สำเร็จ!</h3>',
-          text: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง',
+          title: 'ล็อกอินไม่สำเร็จ!',
+          text: data.error || 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง',
           showConfirmButton: false,
           timer: 2000,
         });
-        router.push('/login');
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -92,111 +89,88 @@ export default function Login() {
     }
   };
 
-  // Loader เต็มจอระหว่าง redirect
+  // ✅ ถ้ายังโหลดฝั่ง Client ไม่เสร็จ ไม่ต้องแสดงผล เพื่อลด Mismatch
+  if (!mounted) return null;
+
   if (loadingRedirect) {
     return (
-      <div
-        style={{
-          position: 'fixed',
-          inset: 0,
-          backgroundColor: '#ffffff',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 9999,
-        }}
-      >
-        <div
-          className="loader ease-linear rounded-full border-8 border-t-8 border-gray-300 h-16 w-16 mb-4"
-          style={{ borderTopColor: '#3b82f6', animation: 'spin 1s linear infinite' }}
-        ></div>
-        <h2 style={{ fontWeight: 'bold', color: '#333' }}>กำลังโหลด...</h2>
-        <style>{`
-          @keyframes spin {
-            0% { transform: rotate(0deg);}
-            100% { transform: rotate(360deg);}
-          }
-        `}</style>
+      <div style={{ position: 'fixed', inset: 0, backgroundColor: '#000', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', zIndex: 9999 }}>
+        <div className="spinner-border text-primary" role="status" style={{ width: '3rem', height: '3rem' }}></div>
+        <h2 className="mt-3 text-white">กำลังพาคุณเข้าสู่ระบบ...</h2>
       </div>
     );
   }
 
   return (
-    <div
-      className="d-flex justify-content-center mt-5"
-      style={{ maxWidth: '400px', padding: '50px', margin: '100px auto' }}
-    >
-      <form
-        onSubmit={handleSubmit}
-        className="p-4 border border-dark rounded"
-        style={{
-          width: '100%',
-          maxWidth: '400px',
-          backgroundImage:
-            'url("https://i.pinimg.com/736x/34/06/5a/34065a361094df5e01063f23e4c7d83c.jpg")',
-          backgroundSize: 'cover',
+    <div className="d-flex justify-content-center align-items-center min-vh-100 px-3">
+      <form 
+        onSubmit={handleSubmit} 
+        suppressHydrationWarning // ✅ ป้องกัน Error จาก Extension
+        className="p-4 shadow-lg text-white" 
+        style={{ 
+          width: '100%', 
+          maxWidth: '400px', 
+          backgroundImage: 'linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("https://i.pinimg.com/736x/34/06/5a/34065a361094df5e01063f23e4c7d83c.jpg")', 
+          backgroundSize: 'cover', 
           backgroundPosition: 'center',
-          color: '#fff',
-          boxShadow: '0 0 15px rgba(0, 0, 0, 0.6)',
-          borderRadius: '20px',
+          borderRadius: '24px',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255,255,255,0.2)'
         }}
       >
-        <h1 className="text-center mb-4" style={{ fontWeight: 'bold' }}>
-          เข้าสู่ระบบ
-        </h1>
+        <h1 className="text-center mb-4 fw-bold">เข้าสู่ระบบ</h1>
 
         <div className="mb-3 text-start">
-          <label htmlFor="username" className="form-label">
-            Username
-          </label>
-          <input
-            id="username"
-            name="username"
-            type="text"
-            className={`form-control ${errors.username ? 'border border-danger' : ''}`}
-            value={formData.username}
-            onChange={handleChange}
-            placeholder="กรุณาใส่ชื่อของท่าน"
+          <label htmlFor="username" className="form-label small">Username</label>
+          <input 
+            id="username" 
+            name="username" 
+            type="text" 
+            suppressHydrationWarning // ✅ เพิ่มเพื่อกัน Error
+            className={`form-control bg-transparent text-white ${errors.username ? 'border-danger' : 'border-white-50'}`} 
+            value={formData.username} 
+            onChange={handleChange} 
+            placeholder="ชื่อผู้ใช้ของคุณ" 
+            style={{ border: '1px solid rgba(255,255,255,0.3)' }}
           />
-          {errors.username && <div className="text-danger">{errors.username}</div>}
+          {errors.username && <div className="text-danger small mt-1">{errors.username}</div>}
         </div>
 
         <div className="mb-3 text-start">
-          <label htmlFor="password" className="form-label">
-            Password
-          </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            className={`form-control ${errors.password ? 'border border-danger' : ''}`}
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="กรุณาใส่รหัสผ่านของท่าน"
+          <label htmlFor="password" className="form-label small">Password</label>
+          <input 
+            id="password" 
+            name="password" 
+            type="password" 
+            suppressHydrationWarning // ✅ เพิ่มเพื่อกัน Error
+            className={`form-control bg-transparent text-white ${errors.password ? 'border-danger' : 'border-white-50'}`} 
+            value={formData.password} 
+            onChange={handleChange} 
+            placeholder="รหัสผ่านของคุณ" 
+            style={{ border: '1px solid rgba(255,255,255,0.3)' }}
           />
-          {errors.password && <div className="text-danger">{errors.password}</div>}
+          {errors.password && <div className="text-danger small mt-1">{errors.password}</div>}
         </div>
 
-        <button type="submit" className="btn btn-primary w-100">
-          เข้าสู่ระบบ
+        <button 
+          type="submit" 
+          suppressHydrationWarning
+          className="btn btn-primary w-100 fw-bold rounded-pill py-2 shadow-sm mb-3"
+          style={{ background: 'linear-gradient(45deg, #3b82f6, #2563eb)', border: 'none' }}
+        >
+          🚀 เข้าสู่ระบบ
         </button>
 
-        <div className="form-check mb-3 text-start mt-3">
-          <input className="form-check-input" type="checkbox" id="rememberMe" />
-          <label className="form-check-label" htmlFor="rememberMe">
-            จดจำฉันไว้
-          </label>
+        <div className="d-flex justify-content-between mb-4 small">
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" id="rememberMe" />
+            <label className="form-check-label" htmlFor="rememberMe">จดจำฉันไว้</label>
+          </div>
+          <Link href="/register" className="text-white-50 text-decoration-none">ลืมรหัสผ่าน?</Link>
         </div>
 
-        <div className="text-center" style={{ fontSize: '0.9rem' }}>
-          <Link href="/register" className="me-3" style={{ color: '#fff' }}>
-            สมัครสมาชิก
-          </Link>{' '}
-          |{' '}
-          <Link href="/register" className="ms-3" style={{ color: '#fff' }}>
-            หากลืมรหัสผ่าน
-          </Link>
+        <div className="text-center small pt-2 border-top border-white-25">
+          ยังไม่มีบัญชี? <Link href="/register" className="fw-bold text-white text-decoration-none">สมัครสมาชิก</Link>
         </div>
       </form>
     </div>

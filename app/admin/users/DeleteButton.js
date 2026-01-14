@@ -1,52 +1,75 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Swal from 'sweetalert2';
+import { useRouter } from 'next/navigation';
 
-export default function DeleteButton({ id, onDeleted }) {
+export default function DeleteButton({ id, onDeleted, targetUsername }) {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleDelete = async () => {
+    // 1. ถามเพื่อความแน่ใจ
     const result = await Swal.fire({
-      title: 'แน่ใจแล้วน๊าา?',
-      text: 'มันยังไม่จบหรอก555!',
+      title: 'ยืนยันการลบสมาชิก?',
+      text: targetUsername === localStorage.getItem('username') 
+        ? 'หากคุณลบตัวเอง ระบบจะพาคุณออกจากระบบทันที!' 
+        : 'ข้อมูลสมาชิกท่านนี้จะถูกลบออกจากระบบอย่างถาวร!',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
+      cancelButtonColor: '#6e7881',
       confirmButtonText: 'ใช่, ลบเลย!',
+      cancelButtonText: 'ยกเลิก',
+      reverseButtons: true
     });
 
     if (!result.isConfirmed) return;
 
     setLoading(true);
     try {
-      const res = await fetch(`https://backend-nextjs-virid.vercel.app/api/users/${id}`, {
+      const token = localStorage.getItem('token');
+      const currentUsername = localStorage.getItem('username'); // ชื่อเราเองที่ล็อกอินอยู่
+      const apiUrl = 'https://backend046.vercel.app/api/users';
+
+      // 2. เรียก API DELETE
+      const res = await fetch(`${apiUrl}/${id}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
       });
 
+      const data = await res.json();
+
       if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(errorText || 'Failed to delete user.');
+        throw new Error(data.error || 'ไม่สามารถลบข้อมูลได้');
       }
 
+      // 3. แสดงผลสำเร็จ
       await Swal.fire({
         icon: 'success',
-        title: 'ลบละจ้า!',
-        text: 'หายไปแย้ว.',
-        timer: 2000,
+        title: 'สำเร็จ!',
+        text: 'ลบข้อมูลเรียบร้อยแล้ว',
+        timer: 1500,
         showConfirmButton: false,
       });
 
-      // ✅ เรียก callback เพื่อแจ้งหน้า page ให้ลบ user ออกจาก state
-      onDeleted?.(id);
+      // 4. ✅ Logic การเด้งออก: ถ้าชื่อที่ลบตรงกับชื่อที่เราล็อกอินอยู่
+      if (targetUsername === currentUsername) {
+        localStorage.clear(); // ล้าง Token และข้อมูลทั้งหมด
+        window.location.href = '/login'; // ใช้ window.location เพื่อให้หน้าเว็บล้างสถานะใหม่หมด
+      } else {
+        onDeleted?.(id); // ถ้าลบคนอื่น แค่เอาการ์ดออกจากการแสดงผล
+      }
 
     } catch (error) {
+      console.error('Delete error:', error);
       await Swal.fire({
         icon: 'error',
-        title: 'Error!',
-        text: 'Error deleting user: ' + error.message,
+        title: 'เกิดข้อผิดพลาด!',
+        text: error.message,
       });
     } finally {
       setLoading(false);
@@ -55,11 +78,16 @@ export default function DeleteButton({ id, onDeleted }) {
 
   return (
     <button
-      className="btn btn-danger btn-sm"
+      className="btn btn-danger btn-sm shadow-sm rounded-pill px-3"
       onClick={handleDelete}
       disabled={loading}
+      style={{ minWidth: '85px' }}
     >
-      <i className="fa fa-trash"></i> {loading ? 'Deleting...' : 'Del'}
+      {loading ? (
+        <span className="spinner-border spinner-border-sm" role="status"></span>
+      ) : (
+        <>🗑️ Delete</>
+      )}
     </button>
   );
 }

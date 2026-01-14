@@ -9,13 +9,9 @@ export default function Register() {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
-    prefix: "",
+    prefix: "", 
     firstname: "",
     lastname: "",
-    fullname: "",
-    address: "",
-    gender: "",
-    birthdate: "",
     terms: false,
   });
 
@@ -31,273 +27,171 @@ export default function Register() {
 
   const validate = () => {
     const newErrors = {};
-
     if (!formData.username) newErrors.username = "กรุณากรอกชื่อผู้ใช้";
     if (!formData.password) newErrors.password = "กรุณากรอกรหัสผ่าน";
     if (!formData.prefix) newErrors.prefix = "กรุณาเลือกคำนำหน้า";
     if (!formData.firstname) newErrors.firstname = "กรุณากรอกชื่อ";
     if (!formData.lastname) newErrors.lastname = "กรุณากรอกนามสกุล";
-    if (!formData.fullname) newErrors.fullname = "กรุณากรอกชื่อเต็ม";
-    if (!formData.address) newErrors.address = "กรุณากรอกที่อยู่";
-    if (!formData.gender) newErrors.gender = "กรุณาเลือกเพศ";
-    if (!formData.birthdate) newErrors.birthdate = "กรุณาเลือกวันเกิด";
     if (!formData.terms) newErrors.terms = "คุณต้องยอมรับเงื่อนไขก่อน";
-
     return newErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-    setErrors({});
 
-    // ✅ ส่งเพศเป็นภาษาไทย ตรง ๆ
+    // ✅ จัดรูปแบบข้อมูลให้ตรงกับตาราง tbl_users ใน Backend
     const submitData = {
       username: formData.username,
       password: formData.password,
-      prefix: formData.prefix,
       firstname: formData.firstname,
       lastname: formData.lastname,
-      fullname: formData.fullname,
-      address: formData.address,
-      sex: formData.gender, // ✅ ใช้ภาษาไทยเลย
-      birthday: formData.birthdate,
+      // สร้าง fullname โดยเอา prefix + ชื่อ + นามสกุล
+      fullname: `${formData.prefix}${formData.firstname} ${formData.lastname}`,
+      status: "active",
     };
 
     try {
-      const res = await fetch("https://backend-nextjs-virid.vercel.app/api/users", {
+      // ✅ ใช้ URL ของ Backend ใหม่ที่รองรับ /api/users (POST)
+      const apiUrl = "https://backend046.vercel.app/api/users";
+      
+      const res = await fetch(apiUrl, {
         method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(submitData),
       });
 
-      if (!res.ok) throw new Error("เกิดข้อผิดพลาดในการส่งข้อมูล");
-
       const result = await res.json();
-      console.log(result);
 
-      await Swal.fire({
-        icon: "success",
-        title: "สมัครสมาชิกสำเร็จ!",
-        text: "กำลังพาท่านไปยังหน้าเข้าสู่ระบบ...",
-        timer: 2000,
-        showConfirmButton: false,
-      });
-
-      router.push("/login");
+      if (res.ok && result.success) {
+        await Swal.fire({
+          icon: "success",
+          title: "สมัครสมาชิกสำเร็จ!",
+          text: "ท่านสามารถเข้าสู่ระบบได้ทันที",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+        router.push("/login");
+      } else {
+        // กรณี Username ซ้ำ หรือ Backend แจ้ง Error
+        throw new Error(result.error || "ไม่สามารถสมัครสมาชิกได้");
+      }
     } catch (error) {
-      console.error(error);
-      Swal.fire({
-        icon: "error",
-        title: "เกิดข้อผิดพลาด",
-        text: error.message || "ไม่สามารถส่งข้อมูลได้",
+      console.error("Register error:", error);
+      Swal.fire({ 
+        icon: "error", 
+        title: "สมัครสมาชิกไม่สำเร็จ", 
+        text: error.message 
       });
     }
   };
 
   return (
-    <div
-      className="container"
-      style={{
-        maxWidth: "400px",
-        padding: "20px",
-        margin: "0 auto",
-        marginTop: "100px",
-        marginBottom: "100px",
-      }}
-    >
-      <form
-        onSubmit={handleSubmit}
-        className="p-4 border border-dark rounded"
-        style={{
-          width: "100%",
-          maxWidth: "400px",
-          backgroundImage:
-            'url("https://i.pinimg.com/736x/d4/c3/f7/d4c3f7bc082d1ffffde14dc358b38f8b.jpg")',
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          color: "#fff",
-          boxShadow: "0 0 15px rgba(0, 0, 0, 0.6)",
-          borderRadius: "20px",
-          textShadow: "2px 2px 4px rgba(0, 0, 0, 0.6)",
-        }}
-      >
-        <h1 className="text-center textwhitek mb-4" style={{ fontWeight: "bold" }}>
-          สมัครสมาชิก
-        </h1>
-
-        {/* Username */}
-        <div className="mb-3 text-start">
-          <label htmlFor="username" className="form-label">Username</label>
-          <input
-            type="text"
-            className={`form-control ${errors.username ? "border border-danger" : ""}`}
-            id="username"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            placeholder="โปรดกรอกชื่อผู้ใช้"
+    <div className="container" style={{ maxWidth: "450px", margin: "80px auto" }}>
+      <form onSubmit={handleSubmit} className="p-4 border border-dark rounded shadow-lg" style={{ 
+        backgroundImage: 'url("https://i.pinimg.com/736x/d4/c3/f7/d4c3f7bc082d1ffffde14dc358b38f8b.jpg")', 
+        backgroundSize: "cover", 
+        backgroundPosition: "center",
+        color: "#fff", 
+        borderRadius: "20px", 
+        boxShadow: "0 0 20px rgba(0,0,0,0.6)" 
+      }}>
+        <h2 className="text-center mb-4" style={{ fontWeight: 'bold' }}>สมัครสมาชิก</h2>
+        
+        <div className="mb-3">
+          <label className="form-label">Username</label>
+          <input 
+            name="username" 
+            className={`form-control ${errors.username ? 'is-invalid' : ''}`} 
+            onChange={handleChange} 
+            placeholder="ตั้งชื่อผู้ใช้ของคุณ"
           />
-          {errors.username && <div className="text-danger">{errors.username}</div>}
+          {errors.username && <div className="invalid-feedback text-warning">{errors.username}</div>}
         </div>
 
-        {/* Password */}
-        <div className="mb-3 text-start">
-          <label htmlFor="password" className="form-label">Password</label>
-          <input
-            type="password"
-            className={`form-control ${errors.password ? "border border-danger" : ""}`}
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="กรุณาตั้งรหัสผ่าน"
+        <div className="mb-3">
+          <label className="form-label">Password</label>
+          <input 
+            name="password" 
+            type="password" 
+            className={`form-control ${errors.password ? 'is-invalid' : ''}`} 
+            onChange={handleChange} 
+            placeholder="ตั้งรหัสผ่าน"
           />
-          {errors.password && <div className="text-danger">{errors.password}</div>}
+          {errors.password && <div className="invalid-feedback text-warning">{errors.password}</div>}
         </div>
 
-        {/* Prefix */}
-        <div className="mb-3 text-start position-relative">
-          <label htmlFor="prefix" className="form-label">คำนำหน้าชื่อ</label>
-          <select
-            id="prefix"
-            name="prefix"
-            className={`form-control ${errors.prefix ? "border border-danger" : ""} pe-5`}
+        <hr style={{ borderColor: "rgba(255,255,255,0.3)" }} />
+
+        <div className="mb-3">
+          <label className="form-label">คำนำหน้าชื่อ</label>
+          <select 
+            name="prefix" 
+            className={`form-select ${errors.prefix ? 'is-invalid' : ''}`} 
+            onChange={handleChange} 
             value={formData.prefix}
-            onChange={handleChange}
           >
-            <option value="" disabled>เลือกคำนำหน้า</option>
+            <option value="">-- เลือก --</option>
             <option value="นาย">นาย</option>
             <option value="นาง">นาง</option>
             <option value="นางสาว">นางสาว</option>
           </select>
-          {errors.prefix && <div className="text-danger">{errors.prefix}</div>}
+          {errors.prefix && <div className="invalid-feedback text-warning">{errors.prefix}</div>}
         </div>
 
-        {/* Firstname */}
-        <div className="mb-3 text-start">
-          <label htmlFor="firstname" className="form-label">ชื่อของคุณ</label>
-          <input
-            type="text"
-            className={`form-control ${errors.firstname ? "border border-danger" : ""}`}
-            id="firstname"
-            name="firstname"
-            value={formData.firstname}
-            onChange={handleChange}
-            placeholder="กรุณากรอกชื่อของคุณ"
+        <div className="row">
+          <div className="col-6 mb-3">
+            <label className="form-label">ชื่อจริง</label>
+            <input 
+              name="firstname" 
+              className={`form-control ${errors.firstname ? 'is-invalid' : ''}`} 
+              onChange={handleChange} 
+              placeholder="ไม่ต้องมีคำนำหน้า"
+            />
+            {errors.firstname && <div className="invalid-feedback text-warning">{errors.firstname}</div>}
+          </div>
+          <div className="col-6 mb-3">
+            <label className="form-label">นามสกุล</label>
+            <input 
+              name="lastname" 
+              className={`form-control ${errors.lastname ? 'is-invalid' : ''}`} 
+              onChange={handleChange} 
+            />
+            {errors.lastname && <div className="invalid-feedback text-warning">{errors.lastname}</div>}
+          </div>
+        </div>
+
+        <div className="mb-4 form-check">
+          <input 
+            type="checkbox" 
+            name="terms" 
+            className="form-check-input" 
+            id="checkTerms" 
+            onChange={handleChange} 
           />
-          {errors.firstname && <div className="text-danger">{errors.firstname}</div>}
-        </div>
-
-        {/* Lastname */}
-        <div className="mb-3 text-start">
-          <label htmlFor="lastname" className="form-label">นามสกุลของคุณ</label>
-          <input
-            type="text"
-            className={`form-control ${errors.lastname ? "border border-danger" : ""}`}
-            id="lastname"
-            name="lastname"
-            value={formData.lastname}
-            onChange={handleChange}
-            placeholder="กรุณากรอกนามสกุลของคุณ"
-          />
-          {errors.lastname && <div className="text-danger">{errors.lastname}</div>}
-        </div>
-
-        {/* Fullname */}
-        <div className="mb-3 text-start">
-          <label htmlFor="fullname" className="form-label">ชื่อเต็ม</label>
-          <input
-            type="text"
-            className={`form-control ${errors.fullname ? "border border-danger" : ""}`}
-            id="fullname"
-            name="fullname"
-            value={formData.fullname}
-            onChange={handleChange}
-            placeholder="กรุณากรอกชื่อเต็ม"
-          />
-          {errors.fullname && <div className="text-danger">{errors.fullname}</div>}
-        </div>
-
-        {/* Address */}
-        <div className="mb-3 text-start">
-          <label htmlFor="address" className="form-label">ที่อยู่ของคุณ</label>
-          <textarea
-            className={`form-control ${errors.address ? "border border-danger" : ""}`}
-            id="address"
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-            rows={3}
-            placeholder="กรุณากรอกที่อยู่ของคุณ"
-          />
-          {errors.address && <div className="text-danger">{errors.address}</div>}
-        </div>
-
-        {/* Gender */}
-        <label htmlFor="gender" className="form-label">เพศ</label>
-        <div className="mb-3 text-start">
-          {["ชาย", "หญิง", "อื่น ๆ", "ไม่ระบุ"].map((genderOption) => (
-            <div className="form-check form-check-inline" key={genderOption}>
-              <input
-                className="form-check-input"
-                type="radio"
-                name="gender"
-                id={genderOption}
-                value={genderOption}
-                checked={formData.gender === genderOption}
-                onChange={handleChange}
-              />
-              <label className="form-check-label" htmlFor={genderOption}>
-                {genderOption}
-              </label>
-            </div>
-          ))}
-          {errors.gender && <div className="text-danger">{errors.gender}</div>}
-        </div>
-
-        {/* Birthdate */}
-        <div className="mb-3 text-start">
-          <label htmlFor="birthdate" className="form-label">วันเกิด</label>
-          <input
-            type="date"
-            className={`form-control ${errors.birthdate ? "border border-danger" : ""}`}
-            id="birthdate"
-            name="birthdate"
-            value={formData.birthdate}
-            onChange={handleChange}
-          />
-          {errors.birthdate && <div className="text-danger">{errors.birthdate}</div>}
-        </div>
-
-        {/* Terms */}
-        <div className="mb-3 form-check text-start">
-          <input
-            type="checkbox"
-            className="form-check-input"
-            id="terms"
-            name="terms"
-            checked={formData.terms}
-            onChange={handleChange}
-          />
-          <label className="form-check-label" htmlFor="terms">
-            ฉันยอมรับเงื่อนไขและข้อตกลง
+          <label className="form-check-label" htmlFor="checkTerms" style={{ fontSize: '0.9rem' }}>
+            ยอมรับเงื่อนไขการสมัครสมาชิก
           </label>
-          {errors.terms && <div className="text-danger">{errors.terms}</div>}
+          {errors.terms && <div className="text-warning small mt-1">{errors.terms}</div>}
         </div>
 
-        {/* Submit Button */}
-        <div className="d-grid">
-          <button type="submit" className="btn btn-primary">
-            ลงทะเบียน
+        <button type="submit" className="btn btn-primary w-100 shadow-sm" style={{ fontWeight: 'bold', padding: '10px' }}>
+          สร้างบัญชีผู้ใช้
+        </button>
+
+        <div className="text-center mt-3">
+          <span style={{ fontSize: '0.9rem' }}>มีบัญชีอยู่แล้ว? </span>
+          <button 
+            type="button" 
+            className="btn btn-link p-0 text-white fw-bold" 
+            style={{ textDecoration: 'none', fontSize: '0.9rem' }}
+            onClick={() => router.push('/login')}
+          >
+            เข้าสู่ระบบ
           </button>
         </div>
       </form>
