@@ -137,7 +137,7 @@ export default function BackgroundMusic() {
         </>
       )}
 
-      <audio ref={audioRef} src="/music/jelly.mp3" loop />
+      <audio ref={audioRef} src="/music/nm.mp3" loop />
     </div>
   );
 }
