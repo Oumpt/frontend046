@@ -15,7 +15,7 @@ export default function OverviewPage() {
   const router = useRouter();
 
   // ✅ ดึง URL จาก Env (ที่นายตั้งไว้ว่า .../api)
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'hhttps://backend046.vercel.app/api/';
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend046.vercel.app/api/';
 
   useEffect(() => {
     const token = localStorage.getItem('token');
