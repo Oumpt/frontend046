@@ -185,23 +185,48 @@ export default function InventoryPage() {
 
   const categories = ['All', ...new Set(products.map(p => p.category))];
 
-  // ✅ 9. เพิ่ม/แก้ไขสินค้า (ส่ง Token ด้วย)
+// ✅ 9. เพิ่ม/แก้ไขสินค้า (เพิ่มช่อง Image URL กลับมาแล้ว)
   const showProductForm = async (product = null) => {
     const isEdit = !!product;
     const today = getTodayLocal(); 
     const { value: v } = await Swal.fire({
       title: isEdit ? '📝 แก้ไขสินค้า' : '➕ เพิ่มสินค้าด่วน',
-      background: '#1a1a1a', color: '#fff',
+      background: '#1a1a1a', 
+      color: '#fff',
       html: `
         <div class="row g-2 text-start">
-          <div class="col-12"><label class="small text-secondary">ชื่อสินค้า</label><input id="n" class="swal2-input m-0 w-100 text-white bg-dark" value="${isEdit ? product.product_name : ''}"></div>
-          <div class="col-6"><label class="small text-secondary">ราคา (฿)</label><input id="p" type="number" class="swal2-input m-0 w-100 text-white bg-dark" value="${isEdit ? product.price : ''}"></div>
-          <div class="col-6"><label class="small text-secondary">จำนวนสต็อก</label><input id="q" type="number" class="swal2-input m-0 w-100 text-white bg-dark" value="${isEdit ? product.quantity : ''}"></div>
-          <div class="col-6"><label class="small text-secondary">วันนำเข้า</label><input id="e" type="date" class="swal2-input m-0 w-100 text-white bg-dark" value="${isEdit ? getSafeDate(product.entry_date) : today}"></div>
-          <div class="col-6"><label class="small text-secondary">วันหมดอายุ</label><input id="ex" type="date" class="swal2-input m-0 w-100 text-white bg-dark" value="${isEdit ? getSafeDate(product.expiry_date) : ''}"></div>
-          <div class="col-7"><label class="small text-secondary">หมวดหมู่</label><input id="c" class="swal2-input m-0 w-100 text-white bg-dark" value="${isEdit ? product.category : ''}"></div>
-          <div class="col-5"><label class="small text-danger">⚠️ ขั้นต่ำที่ต้องเตือน</label><input id="m" type="number" class="swal2-input m-0 w-100 text-white bg-dark border-danger border-opacity-50" value="${isEdit ? product.min_stock : '5'}"></div>
-          <input id="i" type="hidden" value="${isEdit ? product.image_url : ''}">
+          <div class="col-12">
+            <label class="small text-secondary">ชื่อสินค้า</label>
+            <input id="n" class="swal2-input m-0 w-100 text-white bg-dark" value="${isEdit ? product.product_name : ''}">
+          </div>
+          <div class="col-12">
+            <label class="small text-secondary">URL รูปภาพสินค้า</label>
+            <input id="i" class="swal2-input m-0 w-100 text-white bg-dark" placeholder="https://..." value="${isEdit ? (product.image_url || '') : ''}">
+          </div>
+          <div class="col-6">
+            <label class="small text-secondary">ราคา (฿)</label>
+            <input id="p" type="number" class="swal2-input m-0 w-100 text-white bg-dark" value="${isEdit ? product.price : ''}">
+          </div>
+          <div class="col-6">
+            <label class="small text-secondary">จำนวนสต็อก</label>
+            <input id="q" type="number" class="swal2-input m-0 w-100 text-white bg-dark" value="${isEdit ? product.quantity : ''}">
+          </div>
+          <div class="col-6">
+            <label class="small text-secondary">วันนำเข้า</label>
+            <input id="e" type="date" class="swal2-input m-0 w-100 text-white bg-dark" value="${isEdit ? getSafeDate(product.entry_date) : today}">
+          </div>
+          <div class="col-6">
+            <label class="small text-secondary">วันหมดอายุ</label>
+            <input id="ex" type="date" class="swal2-input m-0 w-100 text-white bg-dark" value="${isEdit ? getSafeDate(product.expiry_date) : ''}">
+          </div>
+          <div class="col-7">
+            <label class="small text-secondary">หมวดหมู่</label>
+            <input id="c" class="swal2-input m-0 w-100 text-white bg-dark" value="${isEdit ? product.category : ''}">
+          </div>
+          <div class="col-5">
+            <label class="small text-danger">⚠️ ขั้นต่ำที่ต้องเตือน</label>
+            <input id="m" type="number" class="swal2-input m-0 w-100 text-white bg-dark border-danger border-opacity-50" value="${isEdit ? product.min_stock : '5'}">
+          </div>
         </div>`,
       preConfirm: () => {
         const inputEntry = document.getElementById('e').value; 
@@ -217,10 +242,11 @@ export default function InventoryPage() {
           min_stock: document.getElementById('m').value, 
           entry_date: finalEntry,
           expiry_date: finalExpiry,
-          image_url: document.getElementById('i').value 
+          image_url: document.getElementById('i').value // ✅ ดึงค่าจาก input id="i"
         }
       }
     });
+
     if (v) {
       const token = localStorage.getItem('token');
       const res = await fetch(isEdit ? `http://localhost:5000/api/products/${product.id}` : 'http://localhost:5000/api/products', {
