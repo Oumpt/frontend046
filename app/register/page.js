@@ -44,20 +44,16 @@ export default function Register() {
       return;
     }
 
-    // ✅ จัดรูปแบบข้อมูลให้ตรงกับตาราง tbl_users ใน Backend
     const submitData = {
       username: formData.username,
       password: formData.password,
       firstname: formData.firstname,
       lastname: formData.lastname,
-      // สร้าง fullname โดยเอา prefix + ชื่อ + นามสกุล
       fullname: `${formData.prefix}${formData.firstname} ${formData.lastname}`,
-      status: "active",
     };
 
     try {
-      // ✅ ใช้ URL ของ Backend ใหม่ที่รองรับ /api/users (POST)
-      const apiUrl = "https://backend046.vercel.app/api/users";
+      const apiUrl = "https://backend046.vercel.app/api/auth/register";
       
       const res = await fetch(apiUrl, {
         method: "POST",
@@ -71,13 +67,12 @@ export default function Register() {
         await Swal.fire({
           icon: "success",
           title: "สมัครสมาชิกสำเร็จ!",
-          text: "ท่านสามารถเข้าสู่ระบบได้ทันที",
+          text: "บัญชีพนักงานของคุณถูกสร้างแล้ว สามารถเข้าสู่ระบบได้ทันที",
           timer: 2000,
           showConfirmButton: false,
         });
         router.push("/login");
       } else {
-        // กรณี Username ซ้ำ หรือ Backend แจ้ง Error
         throw new Error(result.error || "ไม่สามารถสมัครสมาชิกได้");
       }
     } catch (error) {
@@ -91,7 +86,8 @@ export default function Register() {
   };
 
   return (
-    <div className="container" style={{ maxWidth: "450px", margin: "80px auto" }}>
+    // ✅ ปรับ margin-top จาก 80px เป็น 120px เพื่อขยับฟอร์มลงมา
+    <div className="container" style={{ maxWidth: "450px", margin: "120px auto" }}>
       <form onSubmit={handleSubmit} className="p-4 border border-dark rounded shadow-lg" style={{ 
         backgroundImage: 'url("https://i.pinimg.com/736x/d4/c3/f7/d4c3f7bc082d1ffffde14dc358b38f8b.jpg")', 
         backgroundSize: "cover", 

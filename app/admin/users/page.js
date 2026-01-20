@@ -78,17 +78,27 @@ export default function AdminUsersPage() {
                     {item.firstname} {item.lastname}
                   </h6>
                   <p className="mb-1 small text-dark"><strong>Username:</strong> {item.username}</p>
-                  <p className="mb-2 small text-dark">
+                  
+                  {/* ✅ แสดงสถานะ Status */}
+                  <p className="mb-1 small text-dark">
                     <strong>Status:</strong>{' '}
                     <span className={`badge ${item.status === 'active' ? 'bg-success' : 'bg-secondary'}`}>
                       {item.status || 'active'}
                     </span>
                   </p>
+
+                  {/* ✅ เพิ่มการแสดง Role (สิทธิ์การใช้งาน) */}
+                  <p className="mb-2 small text-dark">
+                    <strong>Role:</strong>{' '}
+                    <span className={`badge ${item.role === 'admin' ? 'bg-info' : 'bg-dark opacity-75'}`}>
+                      {item.role === 'admin' ? '🛡️ Admin' : '👤 Staff'}
+                    </span>
+                  </p>
+
                   <div className="d-flex justify-content-end gap-2 mt-3">
                     <Link href={`/admin/users/edit/${item.id}`}>
                       <button className="btn btn-warning btn-sm rounded-pill px-3 shadow-sm">✏️ Edit</button>
                     </Link>
-                    {/* ✅ ส่ง targetUsername เข้าไปเพื่อให้เช็คการลบตัวเองได้ */}
                     <DeleteButton 
                       id={item.id} 
                       onDeleted={handleDeleteUser} 

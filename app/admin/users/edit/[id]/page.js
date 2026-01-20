@@ -17,6 +17,7 @@ export default function EditUserPage() {
     username: '',
     password: '', 
     status: 'active',
+    role: 'staff', // ✅ เพิ่มฟิลด์ role
   });
 
   useEffect(() => {
@@ -47,6 +48,7 @@ export default function EditUserPage() {
             username: user.username || '',
             password: '', 
             status: user.status || 'active',
+            role: user.role || 'staff', // ✅ ดึงค่า role จาก DB
           });
         }
       } catch (err) {
@@ -102,14 +104,13 @@ export default function EditUserPage() {
     <div className="min-vh-100 d-flex justify-content-center align-items-center" 
          style={{ padding: '20px' }}>
       
-      {/* ปรับฟอร์มให้ใสขึ้น (Transparent) */}
       <form onSubmit={handleSubmit} className="p-4" style={{ 
           width: '100%', 
           maxWidth: '420px', 
-          backgroundColor: 'rgba(0, 0, 0, 0.3)', // ✅ เปลี่ยนเป็นสีดำใสเพื่อให้เห็นภาพหลังชัดขึ้น
-          border: '1px solid rgba(255, 255, 255, 0.1)', // ✅ เส้นขอบบางมากๆ
+          backgroundColor: 'rgba(0, 0, 0, 0.3)', 
+          border: '1px solid rgba(255, 255, 255, 0.1)', 
           borderRadius: '24px', 
-          backdropFilter: 'blur(8px)', // ✅ ลดความเบลอลงหน่อยให้เห็นเงาภาพหลัง
+          backdropFilter: 'blur(8px)', 
           color: '#fff',
           boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
         }}>
@@ -146,6 +147,18 @@ export default function EditUserPage() {
             className="form-control bg-transparent text-white border-white-50" 
             style={{ border: '1px solid rgba(255,255,255,0.2)' }}
             value={formData.username} onChange={handleChange} />
+        </div>
+
+        {/* ✅ เพิ่มส่วนเลือกสิทธิ์การใช้งาน (Role) */}
+        <div className="mb-3">
+          <label className="form-label small">ระดับสิทธิ์การใช้งาน (Role)</label>
+          <select name="role" 
+            className="form-select bg-dark text-white border-white-50" 
+            style={{ border: '1px solid rgba(255,255,255,0.2)', backgroundColor: 'rgba(0,0,0,0.5)' }}
+            value={formData.role} onChange={handleChange}>
+            <option value="staff">Staff (พนักงาน)</option>
+            <option value="admin">Admin (ผู้ดูแลระบบ)</option>
+          </select>
         </div>
 
         <div className="mb-4">

@@ -9,7 +9,7 @@ export default function Login() {
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [errors, setErrors] = useState({});
   const [loadingRedirect, setLoadingRedirect] = useState(false);
-  const [mounted, setMounted] = useState(false); // ✅ ป้องกัน Hydration Error
+  const [mounted, setMounted] = useState(false); 
   const router = useRouter();
 
   useEffect(() => {
@@ -54,13 +54,15 @@ export default function Login() {
       const data = await res.json();
 
       if (data.success && data.token) {
+        // ✅ เก็บข้อมูลลง LocalStorage ให้ครบตามที่ Backend ส่งมา
         localStorage.setItem('token', data.token);
-        localStorage.setItem('username', formData.username);
+        localStorage.setItem('username', data.user.username); 
+        localStorage.setItem('role', data.user.role); // 👈 เพิ่มการเก็บ Role เพื่อใช้แยกสิทธิ์หน้าบ้าน
 
         await Swal.fire({
           icon: 'success',
           title: 'ล็อกอินสำเร็จ!',
-          text: `ยินดีต้อนรับคุณ ${formData.username}`,
+          text: `ยินดีต้อนรับคุณ ${data.user.username}`, 
           showConfirmButton: false,
           timer: 1500,
         });
@@ -89,7 +91,6 @@ export default function Login() {
     }
   };
 
-  // ✅ ถ้ายังโหลดฝั่ง Client ไม่เสร็จ ไม่ต้องแสดงผล เพื่อลด Mismatch
   if (!mounted) return null;
 
   if (loadingRedirect) {
@@ -105,7 +106,7 @@ export default function Login() {
     <div className="d-flex justify-content-center align-items-center min-vh-100 px-3">
       <form 
         onSubmit={handleSubmit} 
-        suppressHydrationWarning // ✅ ป้องกัน Error จาก Extension
+        suppressHydrationWarning 
         className="p-4 shadow-lg text-white" 
         style={{ 
           width: '100%', 
@@ -126,7 +127,6 @@ export default function Login() {
             id="username" 
             name="username" 
             type="text" 
-            suppressHydrationWarning // ✅ เพิ่มเพื่อกัน Error
             className={`form-control bg-transparent text-white ${errors.username ? 'border-danger' : 'border-white-50'}`} 
             value={formData.username} 
             onChange={handleChange} 
@@ -142,7 +142,6 @@ export default function Login() {
             id="password" 
             name="password" 
             type="password" 
-            suppressHydrationWarning // ✅ เพิ่มเพื่อกัน Error
             className={`form-control bg-transparent text-white ${errors.password ? 'border-danger' : 'border-white-50'}`} 
             value={formData.password} 
             onChange={handleChange} 
@@ -154,7 +153,6 @@ export default function Login() {
 
         <button 
           type="submit" 
-          suppressHydrationWarning
           className="btn btn-primary w-100 fw-bold rounded-pill py-2 shadow-sm mb-3"
           style={{ background: 'linear-gradient(45deg, #3b82f6, #2563eb)', border: 'none' }}
         >
