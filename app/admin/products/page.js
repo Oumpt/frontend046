@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation'; // ✅ นำเข้า router
+import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 
 export default function InventoryPage() {
@@ -10,32 +10,34 @@ export default function InventoryPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [filterMode, setFilterMode] = useState('all');
-  const router = useRouter(); // ✅ ประกาศ router
+  const router = useRouter();
 
-  // ✅ 1. เช็คสิทธิ์การเข้าใช้งาน (ต้อง Login ก่อน)
+  // ✅ แก้ไขตรงนี้: เช็คว่าถ้าเป็น localhost ให้ใช้ 5000 ถ้าไม่ใช่ให้ใช้ Vercel
+  const API_BASE_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost' 
+    ? 'http://localhost:5000/api/products' 
+    : 'https://backend046.vercel.app/api/products';
+
+  // ✅ 1. เช็คสิทธิ์การเข้าใช้งาน
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
-      router.push('/login'); // ไม่มีกุญแจ ดีดกลับหน้า Login
+      router.push('/login');
       return;
     }
-    fetchProducts(); // มีกุญแจ ค่อยโหลดข้อมูล
+    fetchProducts();
   }, [router]);
 
-  // ✅ 2. ฟังก์ชันดึงวันที่แบบสะอาด (YYYY-MM-DD)
   const getSafeDate = (dateStr) => {
     if (!dateStr) return '';
     return dateStr.substring(0, 10);
   };
 
-  // ✅ 3. ฟังก์ชันแสดงวันที่ วว/ดด/ปปปป
   const displayThaiDate = (dateStr) => {
     if (!dateStr) return '-';
     const [y, m, d] = dateStr.substring(0, 10).split('-');
     return `${d}/${m}/${y}`;
   };
 
-  // ✅ 4. ฟังก์ชันสร้างวันที่ "วันนี้" แบบ Local
   const getTodayLocal = () => {
     const now = new Date();
     const y = now.getFullYear();
@@ -44,14 +46,14 @@ export default function InventoryPage() {
     return `${y}-${m}-${d}`;
   };
 
-  // ✅ 5. ดึงข้อมูลสินค้า (ส่ง Token ไปที่ Backend ด้วย)
+  // ✅ 5. ดึงข้อมูลสินค้า (ใช้ API_BASE_URL)
   const fetchProducts = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('https://backend046.vercel.app/api/products', { 
+      const res = await fetch(API_BASE_URL, { 
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${token}`, // ✅ ส่งกุญแจไปยืนยัน
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
         cache: 'no-store' 
@@ -74,7 +76,6 @@ export default function InventoryPage() {
     }
   };
 
-  // ✅ 6. เช็ควันหมดอายุ
   const checkExpiry = (date) => {
     if (!date) return { label: 'ไม่ระบุ', color: 'text-secondary' };
     const datePart = date.substring(0, 10);
@@ -87,7 +88,6 @@ export default function InventoryPage() {
     return { label: `หมดวันที่: ${formattedDate}`, color: 'text-success' };
   };
 
-  // ✅ 7. ระบบแจ้งเตือนรวม (สต็อกต่ำ + หมดอายุล่วงหน้า 3 วัน)
   const checkNotifications = (items) => {
     const today = new Date(getTodayLocal());
     const lowStockItems = items.filter(p => p.quantity <= p.min_stock);
@@ -129,7 +129,7 @@ export default function InventoryPage() {
     }
   };
 
-  // ✅ 8. แก้ไขสต็อกแบบพิมพ์เอง (ส่ง Token ด้วย)
+  // ✅ 8. แก้ไขสต็อก (ใช้ API_BASE_URL)
   const handleQuickUpdate = async (product) => {
     const { value: newQty } = await Swal.fire({
       title: `📦 แก้ไขสต็อก`,
@@ -154,7 +154,7 @@ export default function InventoryPage() {
     if (newQty !== undefined && newQty !== null) {
       try {
         const token = localStorage.getItem('token');
-        const res = await fetch(`http://localhost:5000/api/products/${product.id}`, {
+        const res = await fetch(`${API_BASE_URL}/${product.id}`, {
           method: 'PUT',
           headers: { 
             'Content-Type': 'application/json',
@@ -185,7 +185,7 @@ export default function InventoryPage() {
 
   const categories = ['All', ...new Set(products.map(p => p.category))];
 
-// ✅ 9. เพิ่ม/แก้ไขสินค้า (เพิ่มช่อง Image URL กลับมาแล้ว)
+  // ✅ 9. เพิ่ม/แก้ไขสินค้า (ใช้ API_BASE_URL)
   const showProductForm = async (product = null) => {
     const isEdit = !!product;
     const today = getTodayLocal(); 
@@ -195,61 +195,32 @@ export default function InventoryPage() {
       color: '#fff',
       html: `
         <div class="row g-2 text-start">
-          <div class="col-12">
-            <label class="small text-secondary">ชื่อสินค้า</label>
-            <input id="n" class="swal2-input m-0 w-100 text-white bg-dark" value="${isEdit ? product.product_name : ''}">
-          </div>
-          <div class="col-12">
-            <label class="small text-secondary">URL รูปภาพสินค้า</label>
-            <input id="i" class="swal2-input m-0 w-100 text-white bg-dark" placeholder="https://..." value="${isEdit ? (product.image_url || '') : ''}">
-          </div>
-          <div class="col-6">
-            <label class="small text-secondary">ราคา (฿)</label>
-            <input id="p" type="number" class="swal2-input m-0 w-100 text-white bg-dark" value="${isEdit ? product.price : ''}">
-          </div>
-          <div class="col-6">
-            <label class="small text-secondary">จำนวนสต็อก</label>
-            <input id="q" type="number" class="swal2-input m-0 w-100 text-white bg-dark" value="${isEdit ? product.quantity : ''}">
-          </div>
-          <div class="col-6">
-            <label class="small text-secondary">วันนำเข้า</label>
-            <input id="e" type="date" class="swal2-input m-0 w-100 text-white bg-dark" value="${isEdit ? getSafeDate(product.entry_date) : today}">
-          </div>
-          <div class="col-6">
-            <label class="small text-secondary">วันหมดอายุ</label>
-            <input id="ex" type="date" class="swal2-input m-0 w-100 text-white bg-dark" value="${isEdit ? getSafeDate(product.expiry_date) : ''}">
-          </div>
-          <div class="col-7">
-            <label class="small text-secondary">หมวดหมู่</label>
-            <input id="c" class="swal2-input m-0 w-100 text-white bg-dark" value="${isEdit ? product.category : ''}">
-          </div>
-          <div class="col-5">
-            <label class="small text-danger">⚠️ ขั้นต่ำที่ต้องเตือน</label>
-            <input id="m" type="number" class="swal2-input m-0 w-100 text-white bg-dark border-danger border-opacity-50" value="${isEdit ? product.min_stock : '5'}">
-          </div>
+          <div class="col-12"><label class="small text-secondary">ชื่อสินค้า</label><input id="n" class="swal2-input m-0 w-100 text-white bg-dark" value="${isEdit ? product.product_name : ''}"></div>
+          <div class="col-12"><label class="small text-secondary">URL รูปภาพ</label><input id="i" class="swal2-input m-0 w-100 text-white bg-dark" placeholder="https://..." value="${isEdit ? (product.image_url || '') : ''}"></div>
+          <div class="col-6"><label class="small text-secondary">ราคา (฿)</label><input id="p" type="number" class="swal2-input m-0 w-100 text-white bg-dark" value="${isEdit ? product.price : ''}"></div>
+          <div class="col-6"><label class="small text-secondary">จำนวนสต็อก</label><input id="q" type="number" class="swal2-input m-0 w-100 text-white bg-dark" value="${isEdit ? product.quantity : ''}"></div>
+          <div class="col-6"><label class="small text-secondary">วันนำเข้า</label><input id="e" type="date" class="swal2-input m-0 w-100 text-white bg-dark" value="${isEdit ? getSafeDate(product.entry_date) : today}"></div>
+          <div class="col-6"><label class="small text-secondary">วันหมดอายุ</label><input id="ex" type="date" class="swal2-input m-0 w-100 text-white bg-dark" value="${isEdit ? getSafeDate(product.expiry_date) : ''}"></div>
+          <div class="col-7"><label class="small text-secondary">หมวดหมู่</label><input id="c" class="swal2-input m-0 w-100 text-white bg-dark" value="${isEdit ? product.category : ''}"></div>
+          <div class="col-5"><label class="small text-danger">⚠️ ขั้นต่ำที่ต้องเตือน</label><input id="m" type="number" class="swal2-input m-0 w-100 text-white bg-dark border-danger border-opacity-50" value="${isEdit ? product.min_stock : '5'}"></div>
         </div>`,
       preConfirm: () => {
-        const inputEntry = document.getElementById('e').value; 
-        const inputExpiry = document.getElementById('ex').value;
-        const finalEntry = (isEdit && inputEntry === getSafeDate(product.entry_date)) ? undefined : (inputEntry || null);
-        const finalExpiry = (isEdit && inputExpiry === getSafeDate(product.expiry_date)) ? undefined : (inputExpiry || null);
-
         return { 
           product_name: document.getElementById('n').value, 
           category: document.getElementById('c').value, 
           price: document.getElementById('p').value, 
           quantity: document.getElementById('q').value, 
           min_stock: document.getElementById('m').value, 
-          entry_date: finalEntry,
-          expiry_date: finalExpiry,
-          image_url: document.getElementById('i').value // ✅ ดึงค่าจาก input id="i"
+          entry_date: document.getElementById('e').value || null,
+          expiry_date: document.getElementById('ex').value || null,
+          image_url: document.getElementById('i').value 
         }
       }
     });
 
     if (v) {
       const token = localStorage.getItem('token');
-      const res = await fetch(isEdit ? `http://localhost:5000/api/products/${product.id}` : 'http://localhost:5000/api/products', {
+      const res = await fetch(isEdit ? `${API_BASE_URL}/${product.id}` : API_BASE_URL, {
         method: isEdit ? 'PUT' : 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -261,12 +232,12 @@ export default function InventoryPage() {
     }
   };
 
-  // ✅ 10. ลบสินค้า (ส่ง Token ด้วย)
+  // ✅ 10. ลบสินค้า (ใช้ API_BASE_URL)
   const handleDelete = async (id, name) => {
     const result = await Swal.fire({ title: 'ลบสินค้า?', icon: 'warning', showCancelButton: true, background: '#1a1a1a', color: '#fff' });
     if (result.isConfirmed) {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:5000/api/products/${id}`, { 
+      const res = await fetch(`${API_BASE_URL}/${id}`, { 
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -324,16 +295,11 @@ export default function InventoryPage() {
                     <tr key={item.id} className="border-bottom border-secondary border-opacity-10">
                       <td data-label="สินค้า"><div className="bg-white rounded-3 p-1 d-flex align-items-center justify-content-center" style={{ width: '45px', height: '45px' }}><img src={item.image_url || 'https://via.placeholder.com/45'} alt="" style={{ maxWidth: '100%', maxHeight: '100%' }} /></div></td>
                       <td data-label="ข้อมูลรายการ"><div className="fw-bold text-white text-md-start text-end">{item.product_name}</div><div className="text-warning small text-md-start text-end">{parseFloat(item.price).toLocaleString()} ฿ | {item.category}</div></td>
-                      
                       <td data-label="สต็อก" className="text-center">
-                        <div 
-                          className={`stock-pill d-inline-block px-3 py-1 rounded-pill border ${item.quantity <= item.min_stock ? 'text-danger border-danger bg-danger bg-opacity-10 fw-bold' : 'text-success border-success bg-success bg-opacity-10'}`}
-                          onClick={() => handleQuickUpdate(item)}
-                        >
+                        <div className={`stock-pill d-inline-block px-3 py-1 rounded-pill border ${item.quantity <= item.min_stock ? 'text-danger border-danger bg-danger bg-opacity-10 fw-bold' : 'text-success border-success bg-success bg-opacity-10'}`} onClick={() => handleQuickUpdate(item)}>
                           {item.quantity} <small className="text-secondary ms-1">✏️</small>
                         </div>
                       </td>
-
                       <td data-label="วันที่สำคัญ" style={{ fontSize: '11px' }}>
                         <div className="text-secondary text-md-start text-end">📥 นำเข้า: {displayThaiDate(item.entry_date)}</div>
                         <div className={`${expiryInfo.color} text-md-start text-end`}>⌛ {expiryInfo.label}</div>
