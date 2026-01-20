@@ -72,7 +72,6 @@ export default function Navbar() {
       }}
     >
       <div className="container-fluid">
-        {/* ลิงก์ไปหน้าแรก/Dashboard */}
         <Link href={tokenState ? "/admin/overview" : "/"} className="navbar-brand d-flex align-items-center gap-2" style={{ color: "white", fontWeight: "bold" }}>
           <Image src="/logo.jpg" alt="Logo" width={32} height={32} className="rounded-circle" />
           <span>ADMIN PANEL</span>
@@ -87,12 +86,10 @@ export default function Navbar() {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-center">
             
-            {/* เมนูพื้นฐาน */}
             <li className="nav-item ms-lg-3">
               <Link className="nav-link text-white" href="/">หน้าแรก</Link>
             </li>
 
-            {/* ✅ เมนูที่จะโชว์เฉพาะ Admin ที่ Login แล้วเท่านั้น */}
             {tokenState && (
               <>
                 <li className="nav-item ms-lg-3 border-start border-white border-opacity-25 ps-lg-3">
@@ -103,6 +100,18 @@ export default function Navbar() {
                 <li className="nav-item ms-lg-3">
                   <Link className="nav-link text-warning fw-bold" href="/admin/products">
                     <i className="bi bi-box-seam-fill me-1"></i> คลังสินค้า
+                  </Link>
+                </li>
+                {/* ✅ เมนูเครื่องขาย POS */}
+                <li className="nav-item ms-lg-3">
+                  <Link className="nav-link fw-bold" href="/admin/pos" style={{ color: "#00ffcc" }}>
+                    <i className="bi bi-cart-fill me-1"></i> ขายสินค้า (POS)
+                  </Link>
+                </li>
+                {/* ✅ เมนูรายงานยอดขาย */}
+                <li className="nav-item ms-lg-3">
+                  <Link className="nav-link fw-bold" href="/admin/sales-report" style={{ color: "#ff99cc" }}>
+                    <i className="bi bi-graph-up-arrow me-1"></i> รายงานยอดขาย
                   </Link>
                 </li>
               </>

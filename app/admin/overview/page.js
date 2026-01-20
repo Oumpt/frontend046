@@ -9,12 +9,12 @@ export default function OverviewPage() {
     totalValue: 0,
     lowStock: 0,
     totalUsers: 0,
-    activeUsers: 0
+    activeUsers: 0,
+    totalSales: 0 // ✅ เพิ่มเก็บยอดขายรวม
   });
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // ✅ ดึง URL จาก Env (ที่นายตั้งไว้ว่า .../api)
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend046.vercel.app/api/';
 
   useEffect(() => {
@@ -34,27 +34,31 @@ export default function OverviewPage() {
         'Content-Type': 'application/json'
       };
 
-      // ✅ ใช้รูปแบบเดียวกับหน้า Users คือ ${API_URL}/endpoint
-      // ไม่ต้องใส่ /api ซ้ำ เพราะมันอยู่ในตัวแปรแล้ว
-      const [resProd, resUser] = await Promise.all([
+      // ✅ เพิ่มการ fetch sales
+      const [resProd, resUser, resSales] = await Promise.all([
         fetch(`${API_URL}/products`, { headers }),
-        fetch(`${API_URL}/users`, { headers })
+        fetch(`${API_URL}/users`, { headers }),
+        fetch(`${API_URL}/sales`, { headers }) // ✅ ดึงข้อมูลยอดขาย
       ]);
 
       const products = await resProd.json();
       const users = await resUser.json();
+      const sales = await resSales.json(); // ✅ รับข้อมูลยอดขาย
 
-      // คำนวณ Stats
       const totalValue = Array.isArray(products) ? products.reduce((acc, p) => acc + (p.price * p.quantity), 0) : 0;
       const lowStockCount = Array.isArray(products) ? products.filter(p => p.quantity <= p.min_stock).length : 0;
       const activeUsersCount = Array.isArray(users) ? users.filter(u => u.status === 'active').length : 0;
+      
+      // ✅ คำนวณรายได้ทั้งหมดจากยอดขายจริง
+      const totalSalesSum = Array.isArray(sales) ? sales.reduce((acc, s) => acc + parseFloat(s.total_price), 0) : 0;
 
       setStats({
         totalProducts: Array.isArray(products) ? products.length : 0,
         totalValue: totalValue,
         lowStock: lowStockCount,
         totalUsers: Array.isArray(users) ? users.length : 0,
-        activeUsers: activeUsersCount
+        activeUsers: activeUsersCount,
+        totalSales: totalSalesSum // ✅ อัปเดตยอดขายลง Stats
       });
 
     } catch (error) {
@@ -71,13 +75,13 @@ export default function OverviewPage() {
       <div className="container">
         <div className="mb-5 text-center text-md-start">
           <h1 className="fw-bold text-white mb-2" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>🚀 Command Center</h1>
-          <p className="text-white-50">ภาพรวมระบบ (Cloud Sync Mode)</p>
+          <p className="text-white-50">ภาพรวมระบบ (Real-time Business Sync)</p>
         </div>
 
         <div className="row g-4 mb-5">
           {[
             { label: 'สินค้าทั้งหมด', value: `${stats.totalProducts} รายการ`, icon: '📦', color: 'text-primary', link: '/admin/products', btnText: 'จัดการคลัง' },
-            { label: 'มูลค่าคลังสินค้า', value: `${stats.totalValue.toLocaleString()} ฿`, icon: '💰', color: 'text-warning', link: null, btnText: null },
+            { label: 'รายได้จากการขายจริง', value: `${stats.totalSales.toLocaleString()} ฿`, icon: '💰', color: 'text-success', link: '/admin/sales-report', btnText: 'ดูรายงานยอดขาย' },
             { label: 'สินค้าสต็อกต่ำ', value: `${stats.lowStock} รายการ`, icon: '⚠️', color: 'text-danger', link: '/admin/products', btnText: 'เช็คสต็อก' },
             { label: 'ทีมแอดมิน', value: `${stats.totalUsers} ท่าน`, icon: '👥', color: 'text-info', link: '/admin/users', btnText: 'จัดการทีม' }
           ].map((item, idx) => (
@@ -114,10 +118,17 @@ export default function OverviewPage() {
                 borderRadius: "35px",
                 border: "1px solid rgba(255, 255, 255, 0.15)"
               }}>
-              <h2 className="text-white fw-bold mb-3">ยินดีต้อนรับ แอดมิน</h2>
+              <h2 className="text-white fw-bold mb-3">ยินดีต้อนรับเข้าสู่ระบบจัดการร้าน</h2>
               <div className="d-flex flex-wrap justify-content-center gap-3 mt-4">
+                {/* ✅ เพิ่มทางลัดไปหน้า POS และ Sales Report */}
+                <Link href="/admin/pos" className="btn btn-success px-5 py-3 rounded-pill fw-bold shadow">
+                  เปิดเครื่องขาย POS 🛒
+                </Link>
                 <Link href="/admin/products" className="btn btn-primary px-5 py-3 rounded-pill fw-bold shadow">
                   เข้าสู่หน้าคลังสินค้า 📦
+                </Link>
+                <Link href="/admin/sales-report" className="btn btn-warning px-5 py-3 rounded-pill fw-bold shadow text-dark">
+                  ดูรายงานยอดขาย 📜
                 </Link>
                 <Link href="/admin/users" className="btn btn-outline-light px-5 py-3 rounded-pill fw-bold border-opacity-50">
                   จัดการแอดมิน 👥
