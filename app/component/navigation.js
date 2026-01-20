@@ -92,7 +92,14 @@ export default function Navbar() {
 
             {tokenState && (
               <>
+                {/* ✅ เพิ่มเมนูภาพรวม (Overview) */}
                 <li className="nav-item ms-lg-3 border-start border-white border-opacity-25 ps-lg-3">
+                  <Link className="nav-link fw-bold" href="/admin/overview" style={{ color: "#80d4ff" }}>
+                    <i className="bi bi-speedometer2 me-1"></i> ภาพรวม
+                  </Link>
+                </li>
+
+                <li className="nav-item ms-lg-3">
                   <Link className="nav-link text-info fw-bold" href="/admin/users">
                     <i className="bi bi-people-fill me-1"></i> จัดการแอดมิน
                   </Link>
@@ -102,13 +109,11 @@ export default function Navbar() {
                     <i className="bi bi-box-seam-fill me-1"></i> คลังสินค้า
                   </Link>
                 </li>
-                {/* ✅ เมนูเครื่องขาย POS */}
                 <li className="nav-item ms-lg-3">
                   <Link className="nav-link fw-bold" href="/admin/pos" style={{ color: "#00ffcc" }}>
                     <i className="bi bi-cart-fill me-1"></i> ขายสินค้า (POS)
                   </Link>
                 </li>
-                {/* ✅ เมนูรายงานยอดขาย */}
                 <li className="nav-item ms-lg-3">
                   <Link className="nav-link fw-bold" href="/admin/sales-report" style={{ color: "#ff99cc" }}>
                     <i className="bi bi-graph-up-arrow me-1"></i> รายงานยอดขาย
