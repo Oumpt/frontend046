@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 export default function Navbar() {
   const [tokenState, setToken] = useState(null);
   const [username, setUsername] = useState("");
+  const [role, setRole] = useState(null);
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
 
@@ -18,10 +19,12 @@ export default function Navbar() {
 
     const token = localStorage.getItem("token");
     const storedUsername = localStorage.getItem("username");
+    const storedRole = localStorage.getItem("role");
     
     if (token) {
       setToken(token);
-      setUsername(storedUsername || "Admin");
+      setUsername(storedUsername || "User");
+      setRole(storedRole);
     }
   }, []);
 
@@ -41,8 +44,10 @@ export default function Navbar() {
     if (result.isConfirmed) {
       localStorage.removeItem("token");
       localStorage.removeItem("username");
+      localStorage.removeItem("role");
       setToken(null);
       setUsername("");
+      setRole(null);
       
       await Swal.fire({
         title: 'ออกจากระบบสำเร็จ',
@@ -66,15 +71,19 @@ export default function Navbar() {
         borderRadius: "18px",
         border: "1px solid rgba(255, 255, 255, 0.25)",
         boxShadow: "0 8px 32px 0 rgba(0, 0, 0, 0.2)",
-        margin: "15px",
-        padding: "10px 20px",
+        margin: "15px auto",
+        maxWidth: "96%",
+        padding: "8px 20px",
         zIndex: 1050
       }}
     >
-      <div className="container-fluid">
-        <Link href={tokenState ? "/admin/overview" : "/"} className="navbar-brand d-flex align-items-center gap-2" style={{ color: "white", fontWeight: "bold" }}>
+      <div className="container-fluid d-flex justify-content-between"> {/* กระจาย Brand กับ Content ออกจากกัน */}
+        
+        <Link href={role === "admin" ? "/admin/overview" : "/"} 
+              className="navbar-brand d-flex align-items-center gap-2" 
+              style={{ color: "white", fontWeight: "bold", fontSize: "1.2rem", flexShrink: 0 }}>
           <Image src="/logo.jpg" alt="Logo" width={32} height={32} className="rounded-circle" />
-          <span>ADMIN PANEL</span>
+          <span>{role === "admin" ? "ADMIN" : "MYSTORE"}</span>
         </Link>
 
         <button className="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
@@ -84,89 +93,80 @@ export default function Navbar() {
         </button>
 
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul className="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-center">
+          {/* ✅ ส่วนนี้คือการทำให้เมนูกระจายตัวเต็มพื้นที่ที่เหลือ */}
+          <ul className="navbar-nav w-100 d-flex justify-content-around align-items-center mb-0" 
+              style={{ fontSize: "0.9rem", listStyle: "none" }}>
             
-            <li className="nav-item ms-lg-3">
-              <Link className="nav-link text-white" href="/">หน้าแรก</Link>
+            <li className="nav-item">
+              <Link className="nav-link text-white" href="/">
+                <i className="bi bi-house-door me-1"></i>หน้าแรก
+              </Link>
             </li>
 
-            {tokenState && (
+            {tokenState && role === "admin" && (
               <>
-                {/* ✅ เพิ่มเมนูภาพรวม (Overview) */}
-                <li className="nav-item ms-lg-3 border-start border-white border-opacity-25 ps-lg-3">
+                <li className="nav-item">
                   <Link className="nav-link fw-bold" href="/admin/overview" style={{ color: "#80d4ff" }}>
-                    <i className="bi bi-speedometer2 me-1"></i> ภาพรวม
+                    <i className="bi bi-speedometer2 me-1"></i>ภาพรวม
                   </Link>
                 </li>
-
-                <li className="nav-item ms-lg-3">
+                <li className="nav-item">
                   <Link className="nav-link text-info fw-bold" href="/admin/users">
-                    <i className="bi bi-people-fill me-1"></i> จัดการแอดมิน
+                    <i className="bi bi-people-fill me-1"></i>สมาชิก
                   </Link>
                 </li>
-                <li className="nav-item ms-lg-3">
+                <li className="nav-item">
                   <Link className="nav-link text-warning fw-bold" href="/admin/products">
-                    <i className="bi bi-box-seam-fill me-1"></i> คลังสินค้า
+                    <i className="bi bi-box-seam-fill me-1"></i>คลัง
                   </Link>
                 </li>
-                <li className="nav-item ms-lg-3">
+                <li className="nav-item">
                   <Link className="nav-link fw-bold" href="/admin/pos" style={{ color: "#00ffcc" }}>
-                    <i className="bi bi-cart-fill me-1"></i> ขายสินค้า (POS)
+                    <i className="bi bi-cart-fill me-1"></i>POS
                   </Link>
                 </li>
-                <li className="nav-item ms-lg-3">
+                <li className="nav-item">
                   <Link className="nav-link fw-bold" href="/admin/sales-report" style={{ color: "#ff99cc" }}>
-                    <i className="bi bi-graph-up-arrow me-1"></i> รายงานยอดขาย
+                    <i className="bi bi-graph-up-arrow me-1"></i>รายงาน
                   </Link>
                 </li>
               </>
             )}
 
-            <li className="nav-item ms-lg-3">
-              <Link className="nav-link text-white" href="/about">เกี่ยวกับเรา</Link>
+            {tokenState && role === "staff" && (
+                <li className="nav-item">
+                    <Link className="nav-link fw-bold" href="/admin/pos" style={{ color: "#00ffcc" }}>
+                        <i className="bi bi-cart-fill me-1"></i>ขายสินค้า (POS)
+                    </Link>
+                </li>
+            )}
+
+            <li className="nav-item">
+              <Link className="nav-link text-white" href="/about">
+                <i className="bi bi-info-circle me-1"></i>เกี่ยวกับเรา
+              </Link>
             </li>
 
-            {tokenState ? (
-              <>
-                <li className="nav-item ms-lg-4 text-white d-flex align-items-center mt-2 mt-lg-0">
-                  <span className="badge bg-light text-dark px-3 py-2 rounded-pill shadow-sm">
-                    <i className="bi bi-person-circle me-2"></i> {username}
+            {/* ส่วนขวาสุด: ชื่อผู้ใช้และปุ่มออก */}
+            <div className="d-flex align-items-center gap-2 ms-lg-2">
+              {tokenState ? (
+                <>
+                  <span className={`badge px-3 py-2 rounded-pill shadow-sm ${role === 'admin' ? 'bg-primary' : 'bg-light text-dark'}`} style={{ fontSize: "0.75rem" }}>
+                    <i className={`bi ${role === 'admin' ? 'bi-shield-check' : 'bi-person-circle'} me-1`}></i> 
+                    {username}
                   </span>
-                </li>
-                <li className="nav-item ms-lg-2 mt-2 mt-lg-0">
-                  <button
-                    type="button"
-                    onClick={handleSignOut}
-                    className="btn btn-danger shadow-sm"
-                    style={{
-                      backgroundColor: "rgba(220, 53, 69, 0.8)",
-                      border: "none",
-                      borderRadius: "10px",
-                      padding: "8px 18px"
-                    }}
-                  >
-                    ออกจากระบบ
+                  <button type="button" onClick={handleSignOut} className="btn btn-danger btn-sm rounded-pill"
+                    style={{ padding: "4px 10px", border: "none" }}>
+                    <i className="bi bi-box-arrow-right"></i>
                   </button>
-                </li>
-              </>
-            ) : (
-              <li className="nav-item ms-lg-4 mt-2 mt-lg-0">
-                <Link
-                  href="/login"
-                  className="btn btn-primary shadow-sm"
-                  style={{
-                    backgroundColor: "rgba(255, 255, 255, 0.15)",
-                    border: "1px solid rgba(255, 255, 255, 0.4)",
-                    backdropFilter: "blur(10px)",
-                    borderRadius: "10px",
-                    padding: "8px 22px",
-                    color: "white"
-                  }}
-                >
-                  เข้าสู่ระบบ
+                </>
+              ) : (
+                <Link href="/login" className="btn btn-primary btn-sm rounded-pill px-3"
+                  style={{ backgroundColor: "rgba(255, 255, 255, 0.2)", color: "white", border: "1px solid rgba(255,255,255,0.4)" }}>
+                  <i className="bi bi-person-lock me-1"></i>Login
                 </Link>
-              </li>
-            )}
+              )}
+            </div>
           </ul>
         </div>
       </div>

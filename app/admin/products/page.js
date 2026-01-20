@@ -7,23 +7,40 @@ export default function InventoryPage() {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState(false); // ✅ เพิ่มสถานะการตรวจสอบสิทธิ์
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [filterMode, setFilterMode] = useState('all');
   const router = useRouter();
 
-  // ✅ แก้ไขตรงนี้: เช็คว่าถ้าเป็น localhost ให้ใช้ 5000 ถ้าไม่ใช่ให้ใช้ Vercel
   const API_BASE_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost' 
     ? 'http://localhost:5000/api/products' 
     : 'https://backend046.vercel.app/api/products';
 
-  // ✅ 1. เช็คสิทธิ์การเข้าใช้งาน
+  // ✅ 1. เช็คสิทธิ์การเข้าใช้งาน (ห้าม Staff ยุ่ง)
   useEffect(() => {
     const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role');
+
     if (!token) {
       router.push('/login');
       return;
     }
+
+    // 🔒 ถ้าไม่ใช่ admin ให้เด้งเตือนและดีดออกทันที
+    if (role !== 'admin') {
+      Swal.fire({
+        icon: 'error',
+        title: '접근 거부 (Access Denied)',
+        text: 'เฉพาะแอดมินเท่านั้นที่สามารถจัดการคลังสินค้าได้',
+        confirmButtonColor: '#d33',
+      }).then(() => {
+        router.push('/'); // ดีดกลับหน้าหลัก
+      });
+      return;
+    }
+
+    setIsAuthorized(true); // สิทธิ์ผ่าน
     fetchProducts();
   }, [router]);
 
@@ -46,7 +63,6 @@ export default function InventoryPage() {
     return `${y}-${m}-${d}`;
   };
 
-  // ✅ 5. ดึงข้อมูลสินค้า (ใช้ API_BASE_URL)
   const fetchProducts = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -129,7 +145,6 @@ export default function InventoryPage() {
     }
   };
 
-  // ✅ 8. แก้ไขสต็อก (ใช้ API_BASE_URL)
   const handleQuickUpdate = async (product) => {
     const { value: newQty } = await Swal.fire({
       title: `📦 แก้ไขสต็อก`,
@@ -185,7 +200,6 @@ export default function InventoryPage() {
 
   const categories = ['All', ...new Set(products.map(p => p.category))];
 
-  // ✅ 9. เพิ่ม/แก้ไขสินค้า (ใช้ API_BASE_URL)
   const showProductForm = async (product = null) => {
     const isEdit = !!product;
     const today = getTodayLocal(); 
@@ -232,7 +246,6 @@ export default function InventoryPage() {
     }
   };
 
-  // ✅ 10. ลบสินค้า (ใช้ API_BASE_URL)
   const handleDelete = async (id, name) => {
     const result = await Swal.fire({ title: 'ลบสินค้า?', icon: 'warning', showCancelButton: true, background: '#1a1a1a', color: '#fff' });
     if (result.isConfirmed) {
@@ -245,7 +258,8 @@ export default function InventoryPage() {
     }
   };
 
-  if (loading) return <div className="text-white text-center w-100" style={{ marginTop: '200px' }}>กำลังโหลด...</div>;
+  // ✅ ถ้ากำลังโหลดหรือไม่มีสิทธิ์ ไม่ต้องเรนเดอร์ UI
+  if (loading || !isAuthorized) return <div className="text-white text-center w-100" style={{ marginTop: '200px' }}>🔐 ตรวจสอบสิทธิ์การเข้าถึง...</div>;
 
   return (
     <div className="min-vh-100 w-100 d-flex justify-content-center" style={{ paddingTop: '100px', paddingBottom: '100px' }}>

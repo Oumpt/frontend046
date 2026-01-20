@@ -9,6 +9,7 @@ export default function EditUserPage() {
   const { id } = useParams();
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState(false); // ✅ ยามเช็คสิทธิ์
 
   const [formData, setFormData] = useState({
     firstname: '',
@@ -17,15 +18,37 @@ export default function EditUserPage() {
     username: '',
     password: '', 
     status: 'active',
-    role: 'staff', // ✅ เพิ่มฟิลด์ role
+    role: 'staff',
   });
 
   useEffect(() => {
+    // 🔒 1. ด่านกั้นสิทธิ์ (ห้าม Staff ยุ่ง)
+    const currentRole = localStorage.getItem('role');
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      router.push('/login');
+      return;
+    }
+
+    if (currentRole !== 'admin') {
+      Swal.fire({
+        icon: 'error',
+        title: 'ระงับการเข้าถึง',
+        text: 'คุณไม่มีสิทธิ์ในการแก้ไขข้อมูลผู้ใช้งาน',
+        confirmButtonColor: '#d33',
+      }).then(() => {
+        router.push('/'); // ดีดกลับหน้าหลัก
+      });
+      return;
+    }
+
+    setIsAuthorized(true); // ✅ สิทธิ์ผ่าน
+
+    // 2. ดึงข้อมูลสมาชิกมาแสดง
     async function fetchUser() {
       try {
-        const token = localStorage.getItem('token');
         const apiUrl = 'https://backend046.vercel.app/api/users';
-        
         const res = await fetch(`${apiUrl}/${id}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -48,7 +71,7 @@ export default function EditUserPage() {
             username: user.username || '',
             password: '', 
             status: user.status || 'active',
-            role: user.role || 'staff', // ✅ ดึงค่า role จาก DB
+            role: user.role || 'staff',
           });
         }
       } catch (err) {
@@ -98,11 +121,12 @@ export default function EditUserPage() {
     }
   };
 
-  if (loading) return null;
+  // ✅ ถ้ากำลังโหลดหรือไม่มีสิทธิ์ ห้ามเรนเดอร์เนื้อหา
+  if (loading || !isAuthorized) return null;
 
   return (
     <div className="min-vh-100 d-flex justify-content-center align-items-center" 
-         style={{ padding: '20px' }}>
+          style={{ padding: '20px' }}>
       
       <form onSubmit={handleSubmit} className="p-4" style={{ 
           width: '100%', 
@@ -149,7 +173,6 @@ export default function EditUserPage() {
             value={formData.username} onChange={handleChange} />
         </div>
 
-        {/* ✅ เพิ่มส่วนเลือกสิทธิ์การใช้งาน (Role) */}
         <div className="mb-3">
           <label className="form-label small">ระดับสิทธิ์การใช้งาน (Role)</label>
           <select name="role" 

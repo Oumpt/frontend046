@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Swal from 'sweetalert2'; // ✅ นำเข้า Swal สำหรับแจ้งเตือน
 
 export default function OverviewPage() {
   const [stats, setStats] = useState({
@@ -10,19 +11,37 @@ export default function OverviewPage() {
     lowStock: 0,
     totalUsers: 0,
     activeUsers: 0,
-    totalSales: 0 // ✅ เพิ่มเก็บยอดขายรวม
+    totalSales: 0 
   });
   const [loading, setLoading] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState(false); // ✅ เพิ่ม state เช็คสิทธิ์
   const router = useRouter();
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend046.vercel.app/api/';
 
   useEffect(() => {
     const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role'); // ✅ ดึง role มาเช็ค
+
     if (!token) {
       router.push('/login');
       return;
     }
+
+    // 🔒 ระบบป้องกัน: ถ้าไม่ใช่ admin ให้ดีดออก
+    if (role !== 'admin') {
+      Swal.fire({
+        icon: 'error',
+        title: '접근 거부 (Access Denied)',
+        text: 'เฉพาะผู้ดูแลระบบเท่านั้นที่เข้าถึงหน้านี้ได้',
+        confirmButtonColor: '#d33',
+      }).then(() => {
+        router.push('/'); // ✅ ดีดกลับหน้าแรก
+      });
+      return;
+    }
+
+    setIsAuthorized(true); // ✅ อนุญาตให้เข้าถึงข้อมูล
     fetchDashboardData();
   }, [router]);
 
@@ -34,22 +53,20 @@ export default function OverviewPage() {
         'Content-Type': 'application/json'
       };
 
-      // ✅ เพิ่มการ fetch sales
       const [resProd, resUser, resSales] = await Promise.all([
         fetch(`${API_URL}/products`, { headers }),
         fetch(`${API_URL}/users`, { headers }),
-        fetch(`${API_URL}/sales`, { headers }) // ✅ ดึงข้อมูลยอดขาย
+        fetch(`${API_URL}/sales`, { headers }) 
       ]);
 
       const products = await resProd.json();
       const users = await resUser.json();
-      const sales = await resSales.json(); // ✅ รับข้อมูลยอดขาย
+      const sales = await resSales.json(); 
 
       const totalValue = Array.isArray(products) ? products.reduce((acc, p) => acc + (p.price * p.quantity), 0) : 0;
       const lowStockCount = Array.isArray(products) ? products.filter(p => p.quantity <= p.min_stock).length : 0;
       const activeUsersCount = Array.isArray(users) ? users.filter(u => u.status === 'active').length : 0;
       
-      // ✅ คำนวณรายได้ทั้งหมดจากยอดขายจริง
       const totalSalesSum = Array.isArray(sales) ? sales.reduce((acc, s) => acc + parseFloat(s.total_price), 0) : 0;
 
       setStats({
@@ -58,7 +75,7 @@ export default function OverviewPage() {
         lowStock: lowStockCount,
         totalUsers: Array.isArray(users) ? users.length : 0,
         activeUsers: activeUsersCount,
-        totalSales: totalSalesSum // ✅ อัปเดตยอดขายลง Stats
+        totalSales: totalSalesSum 
       });
 
     } catch (error) {
@@ -68,7 +85,8 @@ export default function OverviewPage() {
     }
   };
 
-  if (loading) return null;
+  // ✅ ถ้ายังโหลดอยู่ หรือไม่ใช่ admin ไม่ต้องเรนเดอร์ HTML
+  if (loading || !isAuthorized) return null;
 
   return (
     <div className="min-vh-100 w-100" style={{ paddingTop: '120px', paddingBottom: '50px' }}>
@@ -120,7 +138,6 @@ export default function OverviewPage() {
               }}>
               <h2 className="text-white fw-bold mb-3">ยินดีต้อนรับเข้าสู่ระบบจัดการร้าน</h2>
               <div className="d-flex flex-wrap justify-content-center gap-3 mt-4">
-                {/* ✅ เพิ่มทางลัดไปหน้า POS และ Sales Report */}
                 <Link href="/admin/pos" className="btn btn-success px-5 py-3 rounded-pill fw-bold shadow">
                   เปิดเครื่องขาย POS 🛒
                 </Link>

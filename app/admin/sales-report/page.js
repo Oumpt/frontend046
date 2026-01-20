@@ -7,7 +7,36 @@ export default function SalesReportPage() {
   const [sales, setSales] = useState([]);
   const [summary, setSummary] = useState({ daily: 0, totalOrders: 0 });
   const [mounted, setMounted] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(false); // ✅ ยามเช็คสิทธิ์
   const router = useRouter();
+
+  // ✅ เช็คสิทธิ์การเข้าใช้งาน (เฉพาะ Admin เท่านั้น)
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role');
+
+    if (!token) {
+      router.push('/login');
+      return;
+    }
+
+    // 🔒 ระบบป้องกัน: ถ้าไม่ใช่ admin ให้เด้งเตือนและดีดออก
+    if (role !== 'admin') {
+      Swal.fire({
+        icon: 'warning',
+        title: 'สิทธิ์ไม่เพียงพอ',
+        text: 'หน้าข้อมูลการเงินและรายงานยอดขายสำหรับผู้ดูแลระบบเท่านั้น',
+        confirmButtonColor: '#3085d6',
+      }).then(() => {
+        router.push('/'); // ดีดกลับหน้าหลัก หรือหน้า POS
+      });
+      return;
+    }
+
+    setIsAuthorized(true);
+    fetchSales();
+    setMounted(true);
+  }, [router]);
 
   const getApiUrl = (endpoint = '') => {
     const base = typeof window !== 'undefined' && window.location.hostname === 'localhost' 
@@ -16,26 +45,20 @@ export default function SalesReportPage() {
     return `${base}/api/sales${endpoint}`;
   };
 
-  // ✅ 1. แก้ไข: แสดงวันที่ (ใช้ระบบ Timezone สากล)
   const displayThaiDate = (dateStr) => {
     if (!dateStr) return '-';
     const date = new Date(dateStr);
     return date.toLocaleDateString('th-TH', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      timeZone: 'Asia/Bangkok' // บังคับให้เป็นเวลาไทยเสมอ
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      timeZone: 'Asia/Bangkok'
     });
   };
 
-  // ✅ 2. แก้ไข: แสดงเวลา (ใช้ระบบ Timezone สากล)
   const displayThaiTime = (dateStr) => {
     if (!dateStr) return '-';
     const date = new Date(dateStr);
     return date.toLocaleTimeString('th-TH', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
+      hour: '2-digit', minute: '2-digit', hour12: false,
       timeZone: 'Asia/Bangkok'
     });
   };
@@ -53,11 +76,8 @@ export default function SalesReportPage() {
     } catch (error) { console.error(error); }
   };
 
-  // ✅ 3. แก้ไข: การคำนวณยอดวันนี้ (ให้เทียบ Timezone เดียวกัน)
   const calculateSummary = (allSales) => {
-    // หาวันที่ "วันนี้" ของไทยในรูปแบบ YYYY-MM-DD
     const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Bangkok' });
-    
     const todaySales = allSales.filter(s => {
       const sDate = new Date(s.sale_date).toLocaleDateString('en-CA', { timeZone: 'Asia/Bangkok' });
       return sDate === todayStr;
@@ -146,8 +166,7 @@ export default function SalesReportPage() {
     }
   };
 
-  useEffect(() => { setMounted(true); fetchSales(); }, []);
-  if (!mounted) return null;
+  if (!mounted || !isAuthorized) return null;
 
   return (
     <div className="min-vh-100 text-white" style={{ background: '#0a0a0a', paddingTop: '100px' }}>
