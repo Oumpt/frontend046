@@ -16,18 +16,28 @@ export default function SalesReportPage() {
     return `${base}/api/sales${endpoint}`;
   };
 
+  // ✅ 1. แก้ไข: แสดงวันที่ (ใช้ระบบ Timezone สากล)
   const displayThaiDate = (dateStr) => {
     if (!dateStr) return '-';
     const date = new Date(dateStr);
-    date.setHours(date.getHours() + 7);
-    return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear() + 543}`;
+    return date.toLocaleDateString('th-TH', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      timeZone: 'Asia/Bangkok' // บังคับให้เป็นเวลาไทยเสมอ
+    });
   };
 
+  // ✅ 2. แก้ไข: แสดงเวลา (ใช้ระบบ Timezone สากล)
   const displayThaiTime = (dateStr) => {
     if (!dateStr) return '-';
     const date = new Date(dateStr);
-    date.setHours(date.getHours() + 7);
-    return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+    return date.toLocaleTimeString('th-TH', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: 'Asia/Bangkok'
+    });
   };
 
   const fetchSales = async () => {
@@ -43,14 +53,20 @@ export default function SalesReportPage() {
     } catch (error) { console.error(error); }
   };
 
+  // ✅ 3. แก้ไข: การคำนวณยอดวันนี้ (ให้เทียบ Timezone เดียวกัน)
   const calculateSummary = (allSales) => {
-    const todayStr = new Date().toLocaleDateString('en-CA');
+    // หาวันที่ "วันนี้" ของไทยในรูปแบบ YYYY-MM-DD
+    const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Bangkok' });
+    
     const todaySales = allSales.filter(s => {
-      const sDate = new Date(s.sale_date);
-      sDate.setHours(sDate.getHours() + 7);
-      return sDate.toLocaleDateString('en-CA') === todayStr;
+      const sDate = new Date(s.sale_date).toLocaleDateString('en-CA', { timeZone: 'Asia/Bangkok' });
+      return sDate === todayStr;
     });
-    setSummary({ daily: todaySales.reduce((acc, curr) => acc + parseFloat(curr.total_price), 0), totalOrders: todaySales.length });
+    
+    setSummary({ 
+      daily: todaySales.reduce((acc, curr) => acc + parseFloat(curr.total_price), 0), 
+      totalOrders: todaySales.length 
+    });
   };
 
   const showDetail = async (sale) => {
@@ -71,7 +87,6 @@ export default function SalesReportPage() {
     });
   };
 
-  // ✅ ปรับปรุงส่วนนี้: เลือกได้ว่าจะคืนสต็อกหรือไม่
   const handleDelete = async (id) => {
     const { value: formValues } = await Swal.fire({
       title: '🔐 ยืนยันตัวตนเพื่อลบ',
@@ -115,7 +130,7 @@ export default function SalesReportPage() {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem('token')}` 
           },
-          body: JSON.stringify(formValues) // ส่ง username, password และ restoreStock ไปที่ backend
+          body: JSON.stringify(formValues)
         });
         
         const data = await res.json();
