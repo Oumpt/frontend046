@@ -132,7 +132,7 @@ export default function POSPage() {
       <div className="container-fluid px-4">
         
         <div className="d-flex justify-content-between align-items-center mb-5 mt-2">
-          <button className="btn btn-outline-secondary rounded-pill px-4" onClick={() => router.push('/admin/inventory')}>
+          <button className="btn btn-outline-secondary rounded-pill px-4" onClick={() => router.push('/admin/products')}>
             ⬅️ กลับหน้าคลังสินค้า
           </button>
           <h2 className="fw-bold mb-0 text-primary">🛒 POS SYSTEM</h2>
