@@ -18,13 +18,13 @@ export default function Carousel() {
     <div id="carouselExample" className="carousel slide carousel-fade" data-bs-ride="carousel">
       <div className="carousel-inner">
         <div className="carousel-item active">
-          <Image src="/aka.jpg" className="d-block w-100 object-fit-cover" alt="Slide 1" width={1920} height={1080} style={{ height: '100vh', width: '100vw' }} priority />
+          <Image src="/saka111.jpg" className="d-block w-100 object-fit-cover" alt="Slide 1" width={1920} height={1080} style={{ height: '100vh', width: '100vw' }} priority />
         </div>
         <div className="carousel-item">
-          <Image src="/fu.jpg" className="d-block w-100 object-fit-cover" alt="Slide 2" width={1920} height={1080} style={{ height: '100vh', width: '100vw' }} />
+          <Image src="/saka7.jpg" className="d-block w-100 object-fit-cover" alt="Slide 2" width={1920} height={1080} style={{ height: '100vh', width: '100vw' }} />
         </div>
         <div className="carousel-item">
-          <Image src="/page.jpg" className="d-block w-100 object-fit-cover" alt="Slide 3" width={1920} height={1080} style={{ height: '100vh', width: '100vw' }} />
+          <Image src="/saka8.jpg" className="d-block w-100 object-fit-cover" alt="Slide 3" width={1920} height={1080} style={{ height: '100vh', width: '100vw' }} />
         </div>
       </div>
       

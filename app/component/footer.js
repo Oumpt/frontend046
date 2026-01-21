@@ -45,11 +45,11 @@ export default function Footer() {
                       fontSize: '1.25rem',
                     }}
                   >
-                    พงอุ้ม กับ อนิเมะของเขา
+                    พงอุ้ม กับ ระบบร้านค้าของเขา
                   </span>
                 </Link>
                 <p style={{ fontSize: '0.9rem', lineHeight: '1.6' }}>
-                  คัดสรรอนิเมะคุณภาพที่น่าติดตาม เพื่อเพิ่มความสนุกและแรงบันดาลใจในทุกวันของคุณ
+                  คัดสรรระบบจัดการร้านค้าๆ ใช้ที่ไหนที่นั่นดูดีมีสกุลแน่นอน
                 </p>
                 <div className="d-flex gap-3 mt-3">
                   <a href="#" className="text-white" aria-label="Instagram">

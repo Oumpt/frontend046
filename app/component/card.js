@@ -9,30 +9,30 @@ import "swiper/css/navigation";
 export default function Card() {
   const [mounted, setMounted] = useState(false);
   const images = {
-    aka: { default: "/aka.jpg", hover: "/aka_alt.jpg" },
-    fu: { default: "/fu.jpg", hover: "/fu_alt.jpg" },
-    fe: { default: "/fe.jpg", hover: "/fe_alt.jpg" },
-    golden: { default: "/gd2.jpg", hover: "/gd2_alt.jpg" },
-    drstone: { default: "/dr.jpeg", hover: "/dr_alt.jpeg" },
+    aka: { default: "/over1.png", hover: "/over1_alt.png" },
+    fu: { default: "/mem.jpg", hover: "/mem_alt.jpg" },
+    fe: { default: "/box1.jpg", hover: "/box1_alt.jpg" },
+    golden: { default: "/pos1.jpg", hover: "/pos1_alt.jpg" },
+    drstone: { default: "/re3.jpg", hover: "/re3_alt.jpg" },
     titan: { default: "/att.jpg", hover: "/att_alt.jpg" },
   };
 
   const descriptions = {
-    aka: "อากิระเดอะเบส",
-    fu: "แขนกลคนขาหาย",
-    fe: "คุณยายนักท่องเที่ยว",
-    golden: "ขุดทองกันที่หลังเขา",
-    drstone: "หมอหินสุดเหลี่ยมกับพ้องเพื่อน",
-    titan: "มนุษย์เปรตเตะกำแพงเป็นงานอดิเรก",
+    aka: "ระบบดูภาพรวมของร้าน",
+    fu: "ระบบจัดการสมาชิกในการดูแลร้าน",
+    fe: "ระบบจัดการสต๊อคสินค้าในร้าน",
+    golden: "ระบบคิดเงินสําหรับสมาชิกในร้าน",
+    drstone: "ระบบตรวจสอบรายงานยอดขาย",
+    titan: "ระบบอื่นๆ ในอนาคต",
   };
 
   const titles = {
-    aka: "Akira",
-    fu: "Fullmetal Alchemist Brotherhood",
-    fe: "Frieren Beyond Journey's End",
-    golden: "Golden Kamuy",
-    drstone: "Dr. Stone",
-    titan: "Attack on Titan",
+    aka: "ภาพรวม",
+    fu: "สมาชิก",
+    fe: "คลัง",
+    golden: "Pos",
+    drstone: "รายงาน",
+    titan: "Soon",
   };
 
   const keys = ["aka", "fu", "fe", "golden", "drstone", "titan"];
@@ -88,7 +88,7 @@ export default function Card() {
           fontWeight: "normal",
         }}
       >
-        Anime
+        ระบบที่มีในร้าน
       </h1>
 
       <Swiper

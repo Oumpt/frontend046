@@ -142,7 +142,7 @@ export default function BackgroundMusic() {
       )}
 
       {/* ✅ เพิ่ม suppressHydrationWarning ที่แท็ก audio ด้วย */}
-      <audio ref={audioRef} src="/music/nm.mp3" loop suppressHydrationWarning={true} />
+      <audio ref={audioRef} src="/music/eob.mp3" loop suppressHydrationWarning={true} />
     </div>
   );
 }
