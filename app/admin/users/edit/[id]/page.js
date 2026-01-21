@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
-import { handleRoleChangeResponse } from '/utils/authInterceptor';
+
 
 export default function EditUserPage() {
   const router = useRouter();
@@ -125,11 +125,7 @@ export default function EditUserPage() {
       const result = await res.json();
 
       if (result.success) {
-        // Use global role change handler
-        const roleChanged = handleRoleChangeResponse(result);
-        if (roleChanged) {
-          return; // Role change handled, user will be redirected
-        }
+
 
         await Swal.fire({
           icon: 'success',
