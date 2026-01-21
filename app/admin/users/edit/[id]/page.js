@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
-import { fetchWithAuth } from '@/utils/authInterceptor';
+import { handleRoleChangeResponse } from '/utils/authInterceptor';
 
 export default function EditUserPage() {
   const router = useRouter();
