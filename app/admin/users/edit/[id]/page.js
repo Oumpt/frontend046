@@ -3,13 +3,14 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
+import { handleRoleChangeResponse } from '../../../../utils/authInterceptor';
 
 export default function EditUserPage() {
   const router = useRouter();
   const { id } = useParams();
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(true);
-  const [isAuthorized, setIsAuthorized] = useState(false); // ✅ ยามเช็คสิทธิ์
+  const [isAuthorized, setIsAuthorized] = useState(false); // 
 
   const [formData, setFormData] = useState({
     firstname: '',
@@ -103,9 +104,33 @@ export default function EditUserPage() {
         body: JSON.stringify(formData),
       });
 
+      // Check for auth errors (401/403)
+      if (res.status === 401 || res.status === 403) {
+        // Auto logout on auth errors
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
+        localStorage.removeItem('username');
+        
+        await Swal.fire({
+          icon: 'warning',
+          title: 'Session Expired',
+          text: 'Your session has expired. Please login again.',
+          confirmButtonColor: '#d33',
+        });
+        
+        router.push('/login');
+        return;
+      }
+
       const result = await res.json();
 
       if (result.success) {
+        // Use global role change handler
+        const roleChanged = handleRoleChangeResponse(result);
+        if (roleChanged) {
+          return; // Role change handled, user will be redirected
+        }
+
         await Swal.fire({
           icon: 'success',
           title: 'อัปเดตข้อมูลสำเร็จ!',
@@ -121,7 +146,7 @@ export default function EditUserPage() {
     }
   };
 
-  // ✅ ถ้ากำลังโหลดหรือไม่มีสิทธิ์ ห้ามเรนเดอร์เนื้อหา
+  // ถ้ากำลังโหลดหรือไม่มีสิทธิ์ ห้ามเรนเดอร์เนื้อหา
   if (loading || !isAuthorized) return null;
 
   return (

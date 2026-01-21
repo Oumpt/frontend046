@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import Footer from './component/footer';
 import BackgroundMusic from "./component/backgroundmusic";
+import { setupAuthInterceptor } from '../utils/authInterceptor';
 
 import { Prompt } from 'next/font/google';
 const prompt = Prompt({
@@ -11,6 +12,11 @@ const prompt = Prompt({
   weight: ['300', '400', '500', '600', '700'],
   display: 'swap',
 });
+
+// 🛡️ Setup global auth interceptor
+if (typeof window !== 'undefined') {
+  setupAuthInterceptor();
+}
 
 export default function RootLayout({ children }) {
   return (
