@@ -57,6 +57,24 @@ export default function POSPage() {
 
   const categories = ['All', ...new Set(products.map(p => p.category))];
 
+  // ✅ ฟังก์ชันช่วยอัปเดตจำนวนในตะกร้า (เพิ่ม/ลด)
+  const updateCartQty = (productId, amount) => {
+    setCart(prevCart => prevCart.map(item => {
+      if (item.id === productId) {
+        const newQty = item.cartQty + amount;
+        const stockLimit = item.quantity;
+
+        if (newQty > stockLimit) {
+          Swal.fire('เกินจำนวนสต็อก', `มีสินค้าในคลังเพียง ${stockLimit} ชิ้น`, 'warning');
+          return item;
+        }
+        if (newQty < 1) return item; // ไม่ให้ลดต่ำกว่า 1 ถ้าจะลบให้กดปุ่มลบ
+        return { ...item, cartQty: newQty };
+      }
+      return item;
+    }));
+  };
+
   const addToCart = (product) => {
     if (product.quantity <= 0) {
       Swal.fire('สินค้าหมด', 'ไม่สามารถขายได้', 'error');
@@ -76,7 +94,6 @@ export default function POSPage() {
 
   const totalPrice = cart.reduce((acc, item) => acc + (item.price * item.cartQty), 0);
 
-  // ✅ แก้ไขฟังก์ชันการยืนยันชำระเงินใหม่
   const handleCheckout = async () => {
     const result = await Swal.fire({
       title: 'ยืนยันการชำระเงิน?',
@@ -91,7 +108,6 @@ export default function POSPage() {
     if (result.isConfirmed) {
       const token = localStorage.getItem('token');
       try {
-        // ✅ ส่งข้อมูลไปที่ /api/sales ทีเดียว (บันทึกออเดอร์ + ตัดสต็อกที่ Backend)
         const res = await fetch(getApiUrl('/api/sales'), {
           method: 'POST',
           headers: { 
@@ -105,7 +121,6 @@ export default function POSPage() {
         });
 
         const data = await res.json();
-
         if (!res.ok) throw new Error(data.message || 'บันทึกไม่สำเร็จ');
 
         await Swal.fire({ 
@@ -117,7 +132,7 @@ export default function POSPage() {
         });
 
         setCart([]);
-        fetchProducts(); // โหลดสต็อกใหม่ที่ถูกตัดแล้วมาแสดงผล
+        fetchProducts();
       } catch (err) {
         console.error("Checkout error:", err);
         Swal.fire('ผิดพลาด', err.message || 'ไม่สามารถบันทึกยอดขายได้', 'error');
@@ -199,9 +214,32 @@ export default function POSPage() {
                   <div className="text-center py-5 text-secondary"><div className="display-4 opacity-10">🛒</div><p className="mt-3">ยังไม่มีสินค้าในตะกร้า</p></div>
                 ) : (
                   cart.map(item => (
-                    <div key={item.id} className="d-flex justify-content-between align-items-center mb-3 bg-black bg-opacity-40 p-3 rounded-4 border border-secondary border-opacity-20 shadow-sm">
-                      <div style={{maxWidth: '65%'}}><div className="small fw-bold text-white text-truncate">{item.product_name}</div><div className="text-secondary small mt-1">{parseFloat(item.price).toLocaleString()} x {item.cartQty}</div></div>
-                      <div className="text-end"><div className="text-warning fw-bold">{(item.price * item.cartQty).toLocaleString()} ฿</div><button className="btn btn-sm text-danger mt-1 p-0 fw-bold border-0" onClick={(e) => { e.stopPropagation(); setCart(cart.filter(c => c.id !== item.id)); }}>ลบ</button></div>
+                    <div key={item.id} className="bg-black bg-opacity-40 p-3 rounded-4 border border-secondary border-opacity-20 shadow-sm mb-3">
+                      <div className="d-flex justify-content-between align-items-start mb-2">
+                        <div style={{maxWidth: '75%'}}>
+                          <div className="small fw-bold text-white text-truncate">{item.product_name}</div>
+                          <div className="text-warning fw-bold small mt-1">{parseFloat(item.price).toLocaleString()} ฿</div>
+                        </div>
+                        <button className="btn btn-sm text-danger p-0 fw-bold border-0" onClick={() => setCart(cart.filter(c => c.id !== item.id))}>ลบ</button>
+                      </div>
+                      
+                      {/* ✅ เพิ่มส่วนปุ่มแก้ไขจำนวนสินค้าตรงนี้ */}
+                      <div className="d-flex justify-content-between align-items-center mt-2 pt-2 border-top border-secondary border-opacity-10">
+                        <div className="d-flex align-items-center gap-2 bg-dark rounded-pill p-1 border border-secondary border-opacity-25">
+                          <button 
+                            className="btn btn-sm btn-outline-light rounded-circle p-0 d-flex align-items-center justify-content-center" 
+                            style={{width: '24px', height: '24px'}}
+                            onClick={() => updateCartQty(item.id, -1)}
+                          > - </button>
+                          <span className="small fw-bold px-1" style={{minWidth: '20px', textAlign: 'center'}}>{item.cartQty}</span>
+                          <button 
+                            className="btn btn-sm btn-outline-light rounded-circle p-0 d-flex align-items-center justify-content-center" 
+                            style={{width: '24px', height: '24px'}}
+                            onClick={() => updateCartQty(item.id, 1)}
+                          > + </button>
+                        </div>
+                        <div className="text-info fw-bold small">รวม: {(item.price * item.cartQty).toLocaleString()} ฿</div>
+                      </div>
                     </div>
                   ))
                 )}
