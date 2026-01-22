@@ -12,6 +12,7 @@ export default function Register() {
     prefix: "", 
     firstname: "",
     lastname: "",
+    role: "staff",
     terms: false,
   });
 
@@ -32,6 +33,7 @@ export default function Register() {
     if (!formData.prefix) newErrors.prefix = "กรุณาเลือกคำนำหน้า";
     if (!formData.firstname) newErrors.firstname = "กรุณากรอกชื่อ";
     if (!formData.lastname) newErrors.lastname = "กรุณากรอกนามสกุล";
+    if (!formData.role) newErrors.role = "กรุณาเลือกตำแหน่ง";
     if (!formData.terms) newErrors.terms = "คุณต้องยอมรับเงื่อนไขก่อน";
     return newErrors;
   };
@@ -50,6 +52,7 @@ export default function Register() {
       firstname: formData.firstname,
       lastname: formData.lastname,
       fullname: `${formData.prefix}${formData.firstname} ${formData.lastname}`,
+      role: formData.role,
     };
 
     try {
@@ -159,6 +162,20 @@ export default function Register() {
             />
             {errors.lastname && <div className="invalid-feedback text-warning">{errors.lastname}</div>}
           </div>
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">ตำแหน่ง</label>
+          <select 
+            name="role" 
+            className={`form-select ${errors.role ? 'is-invalid' : ''}`} 
+            onChange={handleChange} 
+            value={formData.role}
+          >
+            <option value="staff">พนักงาน (Staff)</option>
+            <option value="admin">ผู้ดูแลระบบ (Admin)</option>
+          </select>
+          {errors.role && <div className="invalid-feedback text-warning">{errors.role}</div>}
         </div>
 
         <div className="mb-4 form-check">
