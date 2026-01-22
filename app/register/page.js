@@ -12,7 +12,7 @@ export default function Register() {
     prefix: "", 
     firstname: "",
     lastname: "",
-    role: "staff",
+    role: "admin",
     terms: false,
   });
 
@@ -89,7 +89,7 @@ export default function Register() {
   };
 
   return (
-    // ✅ ปรับ margin-top จาก 80px เป็น 120px เพื่อขยับฟอร์มลงมา
+    // 
     <div className="container" style={{ maxWidth: "450px", margin: "120px auto" }}>
       <form onSubmit={handleSubmit} className="p-4 border border-dark rounded shadow-lg" style={{ 
         backgroundImage: 'url("https://i.pinimg.com/736x/d4/c3/f7/d4c3f7bc082d1ffffde14dc358b38f8b.jpg")', 
@@ -165,15 +165,18 @@ export default function Register() {
         </div>
 
         <div className="mb-3">
-          <label className="form-label">ตำแหน่ง</label>
+          <label className="form-label">ตำแหน่ง <span className="text-warning">*</span></label>
+          <div className="alert alert-info py-2 px-3 mb-2" style={{ fontSize: '0.85rem', backgroundColor: 'rgba(13, 202, 240, 0.1)', borderColor: 'rgba(13, 202, 240, 0.3)' }}>
+            💡 <strong>แนะนำ:</strong> สมัครเป็นผู้ดูแลระบบ (Admin) เพื่อเข้าถึงฟังก์ชันครบถ้วน
+          </div>
           <select 
             name="role" 
             className={`form-select ${errors.role ? 'is-invalid' : ''}`} 
             onChange={handleChange} 
             value={formData.role}
           >
-            <option value="staff">พนักงาน (Staff)</option>
-            <option value="admin">ผู้ดูแลระบบ (Admin)</option>
+            <option value="admin">👑 ผู้ดูแลระบบ (Admin) - แนะนำ</option>
+            <option value="staff">👤 พนักงาน (Staff)</option>
           </select>
           {errors.role && <div className="invalid-feedback text-warning">{errors.role}</div>}
         </div>
