@@ -182,7 +182,7 @@ export default function SalesReportPage() {
             <h1 className="text-success fw-bold">฿ {summary.daily.toLocaleString()}</h1>
           </div></div>
           <div className="col-md-6"><div className="p-4 rounded-4 border border-primary border-opacity-20 bg-dark">
-            <small className="text-secondary uppercase fw-bold">จำนวนออเดอร์</small>
+            <small className="text-secondary uppercase fw-bold">จำนวนออเดอร์ของวันนี้</small>
             <h1 className="text-primary fw-bold">{summary.totalOrders} รายการ</h1>
           </div></div>
         </div>
