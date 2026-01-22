@@ -7,7 +7,8 @@ export default function SalesReportPage() {
   const [sales, setSales] = useState([]);
   const [summary, setSummary] = useState({ daily: 0, totalOrders: 0 });
   const [mounted, setMounted] = useState(false);
-  const [isAuthorized, setIsAuthorized] = useState(false); // ✅ ยามเช็คสิทธิ์
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const router = useRouter();
 
   // ✅ เช็คสิทธิ์การเข้าใช้งาน (เฉพาะ Admin เท่านั้น)
@@ -71,21 +72,23 @@ export default function SalesReportPage() {
       const data = await res.json();
       if (Array.isArray(data)) {
         setSales(data);
-        calculateSummary(data);
+        calculateSummary(data, selectedDate);
       }
     } catch (error) { console.error(error); }
   };
 
-  const calculateSummary = (allSales) => {
-    const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Bangkok' });
-    const todaySales = allSales.filter(s => {
+  const calculateSummary = (allSales, date = selectedDate) => {
+    const targetDate = new Date(date + 'T00:00:00');
+    const targetDateStr = targetDate.toLocaleDateString('en-CA', { timeZone: 'Asia/Bangkok' });
+    
+    const filteredSales = allSales.filter(s => {
       const sDate = new Date(s.sale_date).toLocaleDateString('en-CA', { timeZone: 'Asia/Bangkok' });
-      return sDate === todayStr;
+      return sDate === targetDateStr;
     });
     
     setSummary({ 
-      daily: todaySales.reduce((acc, curr) => acc + parseFloat(curr.total_price), 0), 
-      totalOrders: todaySales.length 
+      daily: filteredSales.reduce((acc, curr) => acc + parseFloat(curr.total_price), 0), 
+      totalOrders: filteredSales.length 
     });
   };
 
@@ -166,23 +169,69 @@ export default function SalesReportPage() {
     }
   };
 
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+    calculateSummary(sales, date);
+  };
+
+  const resetToToday = () => {
+    const today = new Date().toISOString().split('T')[0];
+    handleDateChange(today);
+  };
+
+  const getDisplayDate = () => {
+    const date = new Date(selectedDate + 'T00:00:00');
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (date.getTime() === today.getTime()) {
+      return 'วันนี้';
+    }
+    
+    return date.toLocaleDateString('th-TH', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      weekday: 'long'
+    });
+  };
+
   if (!mounted || !isAuthorized) return null;
 
   return (
     <div className="min-vh-100 text-white" style={{ background: '#0a0a0a', paddingTop: '100px' }}>
       <div className="container">
-        <div className="d-flex justify-content-between mb-5">
+        <div className="d-flex justify-content-between align-items-center mb-5">
           <h2 className="text-primary fw-bold">📊 รายงานยอดขาย</h2>
-          <button className="btn btn-outline-info rounded-pill" onClick={fetchSales}>🔄 รีเฟรช</button>
+          <div className="d-flex gap-3 align-items-center">
+            <div className="input-group" style={{ maxWidth: '250px' }}>
+              <input 
+                type="date" 
+                className="form-control bg-dark text-white border-secondary" 
+                value={selectedDate}
+                onChange={(e) => handleDateChange(e.target.value)}
+                max={new Date().toISOString().split('T')[0]}
+              />
+              <button 
+                className="btn btn-outline-secondary" 
+                type="button"
+                onClick={resetToToday}
+                title="กลับไปวันนี้"
+              >
+                📅
+              </button>
+            </div>
+            <button className="btn btn-outline-info rounded-pill" onClick={fetchSales}>🔄 รีเฟรช</button>
+          </div>
         </div>
 
         <div className="row g-4 mb-5">
           <div className="col-md-6"><div className="p-4 rounded-4 border border-success border-opacity-20 bg-dark">
-            <small className="text-secondary uppercase fw-bold">ยอดขายวันนี้</small>
+            <small className="text-secondary uppercase fw-bold">ยอดขาย{getDisplayDate() !== 'วันนี้' ? ` (${getDisplayDate()})` : ''}</small>
             <h1 className="text-success fw-bold">฿ {summary.daily.toLocaleString()}</h1>
           </div></div>
           <div className="col-md-6"><div className="p-4 rounded-4 border border-primary border-opacity-20 bg-dark">
-            <small className="text-secondary uppercase fw-bold">จำนวนออเดอร์ของวันนี้</small>
+            <small className="text-secondary uppercase fw-bold">จำนวนออเดอร์{getDisplayDate() !== 'วันนี้' ? ` (${getDisplayDate()})` : ''}</small>
             <h1 className="text-primary fw-bold">{summary.totalOrders} รายการ</h1>
           </div></div>
         </div>
